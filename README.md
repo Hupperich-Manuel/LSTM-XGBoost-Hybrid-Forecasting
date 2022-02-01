@@ -9,7 +9,7 @@ This work contains an overall analysis of the takeaways on applying a hybrid Lon
 
 
 # Introduction
-Is there a way to predict the unpredictable?. Certainly not, either if stock data is discrete random, the probability of exactly predicting the correct price in the future is near 0%. Nonetheless, the spread of the future price can be shrinked down into a _confidenece interval_ that tries to reduce the risk (volatility) of the price.  
+Is there a way to predict the unpredictable?. Certainly not, either if stock data is discrete random, the probability of exactly predicting the correct price in the future is near 0%. Nonetheless, the spread of the future price can be shrinked down into a _confidenece interval_ that tries to reduce the risk (volatility) of the price.
 
 
 # Data 
@@ -18,6 +18,9 @@ Apple Inc. is a publicy traded company on the tech index NASDAQ 100. Nowadays it
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152019252-b834155f-44e0-469c-84dd-926231c46dde.png" >
 </p>
+
+As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution (represented as a black line in the plot), which can be observed in a higher kurtosis and fatter tails (also Shapiro was applyed and we can say that the residuals do not follow a normal distribution). Said this, considering to use ML models which assume Normality might be struggle unless we perform differentiations or more logs on the data. 
+
 
 # Feature Engineering
 
