@@ -15,9 +15,11 @@ Is there a way to predict the unpredictable?. Certainly not, either if stock dat
 # Data 
 Apple Inc. is a publicy traded company on the tech index NASDAQ 100. Nowadays it is the highest valued company worldwide, with a capitalization of over 3 Billion $. Tu justify the selection of this stock, there is a need to point out the standart deviation that tech stocks suffer on a daily basis. Since this work faces a technical analysis, the risk of deviation of a stock (volatitlity) needs to be a bit higher than normal. What does this mean?, basically when someone expects the price to go up, if the historical fluctuation of the price has been exacerbated, there is a higher probability that if a certain price is reached, the price will move into that direction since more people will be dealing with that stock.
 
-![image](https://user-images.githubusercontent.com/67901472/152019252-b834155f-44e0-469c-84dd-926231c46dde.png)
-
-
+<p align="center">
+<kbd>
+    <img src= "https://user-images.githubusercontent.com/67901472/152019252-b834155f-44e0-469c-84dd-926231c46dde.png" width ="430" height="390">
+</kbd>
+</p>
 
 # Feature Engineering
 
