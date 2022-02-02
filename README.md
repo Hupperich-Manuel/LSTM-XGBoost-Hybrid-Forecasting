@@ -16,10 +16,10 @@ Is there a way to predict the unpredictable?. Certainly not, either if stock dat
 Apple Inc. is a publicy traded company on the tech index NASDAQ 100. Nowadays it is the highest valued company worldwide, with a capitalization of over 3 Billion $. Tu justify the selection of this stock, there is a need to point out the standart deviation that tech stocks suffer on a daily basis. Since this work faces a technical analysis, the risk of deviation of a stock (volatitlity) needs to be a bit higher than normal. What does this mean?, basically when someone expects the price to go up, if the historical fluctuation of the price has been exacerbated, there is a higher probability that if a certain price is reached, the price will move into that direction since more people will be dealing with that stock.
 
 <p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152019252-b834155f-44e0-469c-84dd-926231c46dde.png" >
+    <img src= "https://user-images.githubusercontent.com/67901472/152142744-c6f4a510-bbf7-4f61-98b7-14a8408d0712.png" >
 </p>
 
-As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution (represented as a black line in the plot), which can be observed in a higher kurtosis and fatter tails.
+As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution (represented as a black line in the plot), which can be observed in a higher kurtosis and fatter tails. Regarding the Box Plot, we can observe that there is a significant amount of outliers that might harm our model
 
 # Feature Engineering
 
