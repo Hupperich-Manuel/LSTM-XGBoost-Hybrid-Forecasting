@@ -19,8 +19,7 @@ Apple Inc. is a publicy traded company on the tech index NASDAQ 100. Nowadays it
     <img src= "https://user-images.githubusercontent.com/67901472/152019252-b834155f-44e0-469c-84dd-926231c46dde.png" >
 </p>
 
-As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution (represented as a black line in the plot), which can be observed in a higher kurtosis and fatter tails (also Shapiro was applyed and we can say that the residuals do not follow a normal distribution). Said this, considering to use ML models which assume Normality might be struggle unless we perform differentiations or more logs on the data. 
-
+As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution (represented as a black line in the plot), which can be observed in a higher kurtosis and fatter tails.
 
 # Feature Engineering
 
