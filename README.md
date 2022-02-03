@@ -267,6 +267,17 @@ The approach to train the model started by settling some assumptions:
 
 #### Training the Model
 
+For training the model with the best hyperparameters and with the optimal windowing (use of past input data), a time series cross validation was doen on the data. The difference to conventional cross validation method is that you must ensure that the algorithm does not randomly take samples of the data to see its performance, since past data is somehow related to future events.
+So, there was a need to code a _user defined GridsearchCV_, thhis could be done through [_ParameterGrid_](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.ParameterGrid.html), where you insert a dictiory of parameters, and this function makes subsets including all combination of the different parameters.
+Notice that the more paramnters you insert and dpeending on how you crossvalidate (backtest) the data, it is computationally expensive, therefore when implementing this, take into account what are the benefits and the drawbacks of every approach.
+
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152364395-b5f82b41-3332-49d0-8010-4a0a212c7c00.png" width ="500" height="350">
+    <img src= "https://user-images.githubusercontent.com/67901472/152364819-8dac85f7-8737-4077-9819-f70a9a7d53d6.png", width="500" height="350">
+</p>
+
+
+
 ```python
 def xgb_model(X_train, y_train, X_val, y_val, plotting=False):
 
