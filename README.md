@@ -9,6 +9,15 @@ This work contains an overall analysis of the takeaways on applying a hybrid Lon
 
 Keywords: XGBoost, LSTM, Windowing, Feature Engineering, Window Optimization, Hyperparameter Tuning, Mean Absolute Error, Predictions.
 
+# Table of Contents
+1. [Introduction](#introduction)
+1. [Data](#data)
+1. [Feature Engineering](#feature_engineering)
+4. [LSTM-XGBoost](#lstm-xgboost)
+5. [Alternatives](#alternatives)
+6. [Conclusion](#conclusion)
+
+
 
 # Introduction
 Is there a way to predict the unpredictable?. Certainly not, either if stock data is discrete random, the probability of exactly predicting the correct price in the future is near 0%. Nonetheless, the spread of the future price can be shrinked down into a _confidenece interval_ that tries to reduce the risk (volatility) of the price.
@@ -24,7 +33,7 @@ Apple Inc. is a publicy traded company on the tech index NASDAQ 100. Nowadays it
 As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution (represented as a black line in the plot), which can be observed in a higher kurtosis and fatter tails. Regarding the Box Plot, we can observe that there is a significant amount of outliers that might harm our model, which is an issue which musst be considered while dealing with the features. Finally, it is also interesting how the stock performed in terms of cumulative returns, as seen in the line chart, where we can observe the evolution of the stock repsect to other tech gigants (append you find the annualized returns).
 
 
-# Feature Engineering
+# Feature_Engineering
 
 In this section we will discuss the new features created in order to tackle a good performance in our model.
 
@@ -95,7 +104,32 @@ Said this, let sdive deep into the core part of this project, where the combinat
 
 In this sections we will make use of some user defined functions that mainly try to automitize the optimization, interpretation of the applyied models whether through a windowiing functions, graphs or comparisons.
 
-### Main User Defined Fucntions:
+## Content:
+- [UDF](#udf)
+- [XGBoost](#xgboost)
+- [LSTM](#lstm)
+- [Hybrid Approach](#hybrid_approach)
+
+
+## UDF
+
+Main user defined functions:
+
+The first one is used for windowing the data. Although it is explained as comments inside the function, it could be fine to go over the main functionality of this function.
+Basically, this function slices the data into windows. This means that starting from a two dimensional table having time as rows and the features as columns, thanks to this method we are able to get only fractions of this data. These fractions are the considered windows. 
+Imagin you want to use the information of the last 7 days to see if they are able to predict accurately the future, so you will need to train your regressor using the input features to get the prediction for t+1. _Windowing_ does exactly this:
+
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152358117-f1e77e90-6fec-452a-92ec-2e6be6c05c22.png" width="420", height="500">
+</p>
+
+Where the larger rectangle represent the input data, using a eindow of two, and the smaller rectangle is the output data which we are trying to predict.
+Notice that in this study the test set will be the green big rectangle, since we want to estimate the unknown future value.
+
+The other functions basically fulfill the need of splitting the data into the train and test set. However this could have been dne using scikit-learn's predefined function, in order to implement the window, it was easier to code a udf. This is also the same case for the validation split.
+
+Moreover, since the human brain feels much more comfortable when visualizing things, it was good practice to develop a function which is able to plot, the validation set, the test set and the prediction for t+? (**?** since you can predict for more than one period ahead). Aditionally, this plot includes written conclusions, the expected price of the stock and the spread intervals, taken from the validation performance.
+
 ```python
 def windowing(train, val, WINDOW, PREDICTION_SCOPE):
     
@@ -152,6 +186,88 @@ def train_test_split(data, WINDOW):
     return train, test
 #-------------------------------------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------------------------------------
+def train_validation_split(train, percentage):
+    """
+    Divides the training set into train and validation set depending on the percentage indicated
+    """
+    train_set = np.array(train.iloc[:int(len(train)*percentage)])
+    validation_set = np.array(train.iloc[int(len(train)*percentage):])
+    
+    
+    return train_set, validation_set
+#-------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------
+def plotting(y_val, y_test, pred_test, mae, WINDOW, PREDICTION_SCOPE):
+    
+    """This function returns a graph where:
+        - Validation Set
+        - Test Set
+        - Future Prediction
+        - Upper Bound
+        - Lower Bound
+    """
+    
+    ploting_pred = [y_test[-1], pred_test]
+    ploting_test = [y_val[-1]]+list(y_test)
+
+    time = (len(y_val)-1)+(len(ploting_test)-1)+(len(ploting_pred)-1)
+
+    test_time_init = time-(len(ploting_test)-1)-(len(ploting_pred)-1)
+    test_time_end = time-(len(ploting_pred)-1)+1
+
+    pred_time_init = time-(len(ploting_pred)-1)
+    pred_time_end = time+1
+
+    x_ticks = list(stock_prices.index[-time:])+[stock_prices.index[-1]+timedelta(PREDICTION_SCOPE+1)]
+
+    values_for_bounds = list(y_val)+list(y_test)+list(pred_test)
+    upper_band = values_for_bounds+mae
+    lower_band = values_for_bounds-mae
+    
+    print(f"For used windowed data: {WINDOW}")
+    print(f"Prediction scope for date {x_ticks[-1]} / {PREDICTION_SCOPE+1} days")
+    print(f"The predicted price is {str(round(ploting_pred[-1][0],2))}$")
+    print(f"With a spread of MAE is {round(mae,2)}")
+    print()
+    
+    plt.figure(figsize=(16, 8))
+
+    plt.plot(list(range(test_time_init, test_time_end)),ploting_test, marker="$m$", color="orange")
+    plt.plot(list(range(pred_time_init, pred_time_end)),ploting_pred,marker="$m$", color="red")
+    plt.plot(y_val, marker="$m$")
+
+    plt.plot(upper_band, color="grey", alpha=.3)
+    plt.plot(lower_band, color="grey", alpha=.3)
+
+    plt.fill_between(list(range(0, time+1)),upper_band, lower_band, color="grey", alpha=.1)
+
+    plt.xticks(list(range(0-1, time)), x_ticks, rotation=45)
+    plt.text(time-0.5, ploting_pred[-1]+2, str(round(ploting_pred[-1][0],2))+"$", size=11, color='red')
+    plt.title(f"Target price for date {x_ticks[-1]} / {PREDICTION_SCOPE+1} days, with used past data of {WINDOW} days and a MAE of {round(mae,2)}", size=15)
+    plt.legend(["Testing Set (input for Prediction)", "Prediction", "Validation"])
+    plt.show()
+    
+    print()
+    print("-----------------------------------------------------------------------------")
+    print()
+```
+
+
+
+## XGBoost
+XGBoost, is one of the most highly used supervised ML algorithms nowadays, as it uses a more optimized way to implement a tree based algorithm, and it is also able to efficiently manage large and complex datasets.
+
+The methodology followed by this algorithm is the following. XGBoost uses a Greedy algorithm for the building of its tree, meaning it uses a simple intuitive way to optimze the algorithm. The algorithm combines its best model, with previous ones, and so minimizes the error. So, in order to constantly select the models that are actually imporving its performance, a target is settled. and this target will depend on how much the next model has decreased the error, if there was an increase or no change in the error ythe target will be set to zero, otherwise it will set really high since it is difficult to surpas the performance of the previous model.
+
+For more insights into how this algorithm works, check out this video from [StatQuest](https://www.youtube.com/watch?v=OtD8wVaFm6E&t=649s)
+
+The approach to train the model started by settling some assumptions:
+
+- The windowed data uses 2
+
+#### Training the Model
+
+```python
 def xgb_model(X_train, y_train, X_val, y_val, plotting=False):
 
     """
@@ -176,8 +292,22 @@ def xgb_model(X_train, y_train, X_val, y_val, plotting=False):
         plt.title(f"The MAE for this period is: {round(mae, 3)}")
     
     return  mae, xgb_model
-#-------------------------------------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------------------------------------
+```
+
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152218072-d0bbd0b0-7f59-449d-87c3-04dfb711763f.png" >
+</p>
+
+#### Testing the Model
+
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152218913-d46d6ed6-3623-4720-a8af-84d75054e0d2.png">
+</p>
+
+
+## LSTM
+
+```python
 def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plotting=False):
     
     class myCallback(tf.keras.callbacks.Callback):
@@ -215,31 +345,6 @@ def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plott
     return model
 ```
 
-
-
-## XGBoost
-XGBoost, is one of the most highly used supervised ML algorithms nowadays, as it uses a more optimized way to implement a tree based algorithm, and it is also able to efficiently manage large and complex datasets.
-
-The methodology followed by this algorithm is the following. XGBoost uses a Greedy algorithm for the building of its tree, meaning it uses a simple intuitive way to optimze the algorithm. The algorithm combines its best model, with previous ones, and so minimizes the error. So, in order to constantly select the models that are actually imporving its performance, a target is settled. and this target will depend on how much the next model has decreased the error, if there was an increase or no change in the error ythe target will be set to zero, otherwise it will set really high since it is difficult to surpas the performance of the previous model.
-
-For more insights into how this algorithm works, check out this video from [StatQuest](https://www.youtube.com/watch?v=OtD8wVaFm6E&t=649s)
-
-#### Training the Model
-
-<p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152218072-d0bbd0b0-7f59-449d-87c3-04dfb711763f.png" >
-</p>
-
-#### Testing the Model
-
-<p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152218913-d46d6ed6-3623-4720-a8af-84d75054e0d2.png">
-</p>
-
-
-## LSTM
-
-
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152218220-1010ad55-4342-410d-b795-442db442cdb6.png" width="550", height="250">
 </p>
@@ -250,7 +355,7 @@ For more insights into how this algorithm works, check out this video from [Stat
 
 
 
-## Hybrid Approach
+## Hybrid_Approach
 
 # Alternatives
 
@@ -291,7 +396,7 @@ Focusing just on the results obtained, you should question why on earth using a 
 
 
 
-# Conclusions and Clarifications
+# Conclusion
 
 
 
