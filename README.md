@@ -272,8 +272,8 @@ So, there was a need to code a _user defined GridsearchCV_, thhis could be done 
 Notice that the more paramnters you insert and dpeending on how you crossvalidate (backtest) the data, it is computationally expensive, therefore when implementing this, take into account what are the benefits and the drawbacks of every approach.
 
 <p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152364395-b5f82b41-3332-49d0-8010-4a0a212c7c00.png" width ="500" height="350">
-    <img src= "https://user-images.githubusercontent.com/67901472/152364819-8dac85f7-8737-4077-9819-f70a9a7d53d6.png", width="500" height="350">
+    <img src= "https://user-images.githubusercontent.com/67901472/152366099-d36fe0ba-483c-4a63-9b4e-8a314ed32be7.png" width ="500" height="350">
+    <img src= "https://user-images.githubusercontent.com/67901472/152366615-d2ca6258-f522-49d0-8685-f9933faf8eff.png", width="500" height="350">
 </p>
 
 
