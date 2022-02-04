@@ -170,8 +170,9 @@ Imagin you want to use the information of the last 7 days to see if they are abl
     </font>
 </h4>
 <p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152358117-f1e77e90-6fec-452a-92ec-2e6be6c05c22.png" width="420", height="470">
+  <img src="https://user-images.githubusercontent.com/67901472/152602477-c27a5507-e9f8-44cf-80b8-0ccef3797ad8.gif" alt="animated" width=6000", height="500"/>
 </p>
+
 
 Where the larger rectangle represent the input data, using a eindow of two, and the smaller rectangle is the output data which we are trying to predict.
 Notice that in this study the test set will be the green big rectangle, since we want to estimate the unknown future value.
