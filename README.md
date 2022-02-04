@@ -1,8 +1,19 @@
-# LSTM-XGBoost Hybrid Stock Forecasting
+<h1 align="center">
+    <font size="30">
+        <u>LSTM-XGBoost Hybrid Stock Forecasting
+</u>
+    </font>
+</h1>
 
-Whom of you has not thought about making money training a model that returns accurate predictions on t+1, so that one can gain from this hail grail of information?. Well, since this might be true in some cases this is really far from the scope of this work.
-The idea behind this work is to take my knowledge one step further. The hybrid combinations of Deep Learning models together with Decision trees or Linear Regressions are fascinating new ways to extract much more information of the raw inputs one is dealing with. Therefore, I found my opportunity to combine things learned throughout the past years related to coding, statistics, ML models, DL models, Business Perspective, and squeeze those to return an actual _deployable_ model for a real time application.
+<p align="center">
+  <img src="https://media.giphy.com/media/CtYFOdVbvTfgZunPEA/giphy.gif" alt="animated" width=7600", height="400"/>
+</p>
 
+
+Whom of you has not thought about being a step ahead the stock market, using information in a way that it returns accurate predictions for the next trading day. Well, since this might be true in some cases this is really far from the scope of this work.
+The idea behind this work was to take my knowledge one step further. The hybrid combinations of Deep Learning models together with Decision trees or Linear Regressions are fascinating new ways to extract much more information of the raw inputs. Therefore, I took the things learned throughout the past years related to coding, statistics, ML models, DL models, Business Perspective, and squeezed those into an actual _deployable_ model for a real time stock price predictions.
+
+Note that this can be considered to be the final draft of what has been a very intenses research on every topic trated in this work. Since, it would be boring to explain every drawback and handicap faced during this time, send me a message and we can have a nice conversation, sharing our experiences on ML or DL deployments.
 
 # Abstract
 This work contains an overall analysis of the takeaways on applying a hybrid Long Short Term Memory Deep Learning Model together with an XGBoost Regressor to predict the price of the AAPL (Apple Inc.) stock for the next day (**t+1**). Throughout this work, some assumptions are made regarding the optimal number of features, some of the hyperparameter tuning (even though backtesting and tunning was done till a certain point). Notice that the expected outcome of this model should not be used as an indicator for investment decisions since the model could be refined much more, and since the scope of this work was more on learning rather than profitability.
@@ -17,25 +28,46 @@ Keywords: XGBoost, LSTM, Windowing, Feature Engineering, Window Optimization, Hy
 5. [Alternatives](#alternatives)
 6. [Conclusion](#conclusion)
 
-
-
-# Introduction
+<h1 align="center">
+    <font size="30">
+        <u>Introduction
+</u>
+    </font>
+</h1>
+                   
+#### Introduction
+                   
 Is there a way to predict the unpredictable?. Certainly not, either if stock data is discrete random, the probability of exactly predicting the correct price in the future is near 0%. Nonetheless, the spread of the future price can be shrinked down into a _confidenece interval_ that tries to reduce the risk (volatility) of the price.
+                   
+<h1 align="center">
+    <font size="30">
+        <u>Data
+</u>
+    </font>
+</h1>
 
-
-# Data 
-Apple Inc. is a publicy traded company on the tech index NASDAQ 100. Nowadays it is the highest valued company worldwide, with a capitalization of over 3 Billion $. Tu justify the selection of this stock, there is a need to point out the standart deviation that tech stocks suffer on a daily basis. Since this work faces a technical analysis, the risk of deviation of a stock (volatitlity) needs to be a bit higher than normal. What does this mean?, basically when someone expects the price to go up, if the historical fluctuation of the price has been exacerbated, there is a higher probability that if a certain price is reached, the price will move into that direction since more people will be dealing with that stock.
+#### Data 
+Apple Inc. is a publicy traded company on the tech index NASDAQ 100. Nowadays it is the highest valued company worldwide, with a capitalization of over 3 Billion $. To justify the selection of this stock, there is a need to point out what role the volatility of an asset plays when it come to trading. Volatility os the standart deviation of a stock, so, if someone is pretending to trade on a price, a higher fluctuation increases the probability of gaining more opportunities in the market, either _in the market_ or _out the market_. Since this work faces a technical analysis, the risk of deviation of a stock (volatitlity) needs to be a bit higher than normal. However, this startegy could also be applyed on assets that do not suffer from such high fluctuations.
 
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152142744-c6f4a510-bbf7-4f61-98b7-14a8408d0712.png" >
 </p>
+To get an idea of how stock data behaves, it is necesary to get some plottings, so that we can face how the returns, the price and the outliers perform for this specific stock.
+                                                                                                                     
+As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution, represented as a black line in the plot, even though it might seem to be one (a revealing indication is the higher kurtosis and fatter tails). The good thing is that the algorithms that are going to be used in this work, make no assumptions according to the [distribution of the data](https://codowd.com/bigdata/misc/Taleb_Statistical_Consequences_of_Fat_Tails.pdf). Regarding the Box Plot, we can observe that there is a significant amount of outliers that might harm our model. This is an issue which musst be considered while dealing with the features. Finally, it is also interesting how the stock performed in terms of cumulative returns, as seen in the line chart, where we can observe the evolution of the stock repsect to other tech gigants (appended you find the annualized returns).
 
-As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution (represented as a black line in the plot), which can be observed in a higher kurtosis and fatter tails. Regarding the Box Plot, we can observe that there is a significant amount of outliers that might harm our model, which is an issue which musst be considered while dealing with the features. Finally, it is also interesting how the stock performed in terms of cumulative returns, as seen in the line chart, where we can observe the evolution of the stock repsect to other tech gigants (append you find the annualized returns).
 
+<h1 align="center">
+    <font size="30">
+        <u>Feature Engineering
+</u>
+    </font>
+</h1>                                                                                                                  
 
-# Feature_Engineering
+#### Feature_Engineering
 
 In this section we will discuss the new features created in order to tackle a good performance in our model.
+However this might be the longest section of the whole work, not only because the optimization of a model follows a cycle where you continuously adjust the features and see which one really do add value to it (entropy), this part will only cover a small part of this process, focusing only on some of the features that where used for the training process.
 
 Since stock prices behave also according to the time of the year, a focus of interest while generating new features was to include the day, month , quarter, etc of that specific moment as there could have been patterns in the past. An simple example is that, by the end of January, a lot of *blue chips* release their quarterly earnings, and since AAPL consistently does a good job on this, beating the expectations of the analysts, the stock tend to rise oin a short time period (for one day to another). This is quite interesting, since depending on the window optimization used for the analysis this pattern was captured or not.
 
@@ -66,13 +98,16 @@ def feature_engineering(data, SPY, predictions=np.array([None])):
 def features(data, SPY):
     
     for i in [2, 3, 4, 5, 6, 7]:
+                            
+        # Rolling Mean
         data[f"Adj_Close{i}"] = data["Adj Close"].rolling(i).mean()
         data[f"Volume{i}"] = data["Volume"].rolling(i).mean()
-
+        
+        # Rolling Standart Deviation                               
         data[f"Low_std{i}"] = data["Low"].rolling(i).std()
         data[f"High_std{i}"] = data["High"].rolling(i).std()
         data[f"Adj_CLose{i}"] = data["Adj Close"].rolling(i).std()
-
+        
         data[f"Close{i}"] = data["Close"].shift(i)
 
         data[f"Adj_Close{i}"] = data["Adj Close"].rolling(i).max()
@@ -97,8 +132,14 @@ def features(data, SPY):
 ```
 Notice that even though this is a very small amount of features, there was some filtering applyied to it. Of course, when deploying this method in a real case scenario, it is recomendable to regularize the features and observe which ones clearly add value into the model.
 
+<h1 align="center">
+    <font size="30">
+        <u>LSTM-XGBoost
+</u>
+    </font>
+</h1> 
 
-# LSTM-XGBoost
+#### LSTM-XGBoost
 
 Said this, let sdive deep into the core part of this project, where the combination between algorithms will (hopefully) provide us with reliable estimations of the Apple stock price for tomorrow.
 
