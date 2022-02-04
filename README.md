@@ -18,7 +18,7 @@ Note that this can be considered to be the final draft of what has been a very i
 # Abstract
 This work contains an overall analysis of the takeaways on applying a hybrid Long Short Term Memory Deep Learning Model together with an XGBoost Regressor to predict the price of the AAPL (Apple Inc.) stock for the next day (**t+1**). Throughout this work, some assumptions are made regarding the optimal number of features, some of the hyperparameter tuning (even though backtesting and tunning was done till a certain point). Notice that the expected outcome of this model should not be used as an indicator for investment decisions since the model could be refined much more, and since the scope of this work was more on learning rather than profitability.
 
-Keywords: XGBoost, LSTM, Windowing, Feature Engineering, Window Optimization, Hyperparameter Tuning, Mean Absolute Error, Predictions.
+**Keywords: XGBoost, LSTM, Windowing, Feature Engineering, Window Optimization, Hyperparameter Tuning, Mean Absolute Error, Predictions.**
 
 # Table of Contents
 1. [Introduction](#introduction)
@@ -108,11 +108,14 @@ def features(data, SPY):
         data[f"High_std{i}"] = data["High"].rolling(i).std()
         data[f"Adj_CLose{i}"] = data["Adj Close"].rolling(i).std()
         
+        # Stock return for the next i days
         data[f"Close{i}"] = data["Close"].shift(i)
-
+        
+        # Rolling Maximum and Minimum
         data[f"Adj_Close{i}"] = data["Adj Close"].rolling(i).max()
         data[f"Adj_Close{i}"] = data["Adj Close"].rolling(i).min()
-
+        
+        # Rolling Quantile
         data[f"Adj_Close{i}"] = data["Adj Close"].rolling(i).quantile(1)
     
     
@@ -160,8 +163,14 @@ The first one is used for windowing the data. Although it is explained as commen
 Basically, this function slices the data into windows. This means that starting from a two dimensional table having time as rows and the features as columns, thanks to this method we are able to get only fractions of this data. These fractions are the considered windows. 
 Imagin you want to use the information of the last 7 days to see if they are able to predict accurately the future, so you will need to train your regressor using the input features to get the prediction for t+1. _Windowing_ does exactly this:
 
+ <h4 align="center">
+    <font size="6">
+        <u>Windowing Procedure
+</u>
+    </font>
+</h4>
 <p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152358117-f1e77e90-6fec-452a-92ec-2e6be6c05c22.png" width="420", height="500">
+    <img src= "https://user-images.githubusercontent.com/67901472/152358117-f1e77e90-6fec-452a-92ec-2e6be6c05c22.png" width="420", height="470">
 </p>
 
 Where the larger rectangle represent the input data, using a eindow of two, and the smaller rectangle is the output data which we are trying to predict.
