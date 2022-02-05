@@ -947,9 +947,13 @@ Output:
 Lets apply the above defined formula formula:
 
 ```python
-scope = predictions(mae_lstm, mae_xgboost, pred_test_xgb, pred_test)
+prediction_ensemble = predictions(mae_lstm, mae_xgboost, pred_test_xgb, pred_test)
+avg_mae = (mae_lstm + mae_xgboost)/2
+plotting(y_val, y_test, prediction_ensemble, avg_mae, WINDOW, PREDICTION_SCOPE)
 ```
-
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152657061-257ee1a8-b9c6-4636-a246-42b3c821f833.png">
+</p>
 
 
 <h1 align="center">
