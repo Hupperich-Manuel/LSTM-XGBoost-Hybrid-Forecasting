@@ -327,6 +327,7 @@ For training the model with the best hyperparameters and with the optimal window
 So, there was a need to code a _user defined GridsearchCV_, thhis could be done through [_ParameterGrid_](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.ParameterGrid.html), where you insert a dictiory of parameters, and this function makes subsets including all combination of the different parameters.
 Notice that the more paramnters you insert and dpeending on how you crossvalidate (backtest) the data, it is computationally expensive, therefore when implementing this, take into account what are the benefits and the drawbacks of every approach.
 
+###### Hyperparamter_optimization
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152366099-d36fe0ba-483c-4a63-9b4e-8a314ed32be7.png" width ="500" height="350">
     <img src= "https://user-images.githubusercontent.com/67901472/152366615-d2ca6258-f522-49d0-8685-f9933faf8eff.png", width="500" height="350">
@@ -366,10 +367,48 @@ print(test.shape)
 We apply the windowing [udf](#udf)
 ```python
 X_train, y_train, X_val, y_val = windowing(train_set, validation_set, WINDOW, PREDICTION_SCOPE)
+
+#Convert the returned list into arrays
+X_train = np.array(X_train)
+y_train = np.array(y_train)
+X_val = np.array(X_val)
+y_val = np.array(y_val)
+
+print(f"X_train shape: {X_train.shape}")
+print(f"y_train shape: {y_train.shape}")
+print(f"X_val shape: {X_val.shape}")
+print(f"y_val shape: {y_val.shape}")
+
+#Output:
+#>X_train shape: (5045, 2, 49)
+#>y_train shape: (5045,)
+#>X_val shape: (24, 2, 49)
+#>y_val shape: (24,)
+```
+
+Since the XGBoost algorthm does not allow a three dimensional input, there is a need to reshape the data into two dimensions. The idea behind the reshape is to join the rows of the windowed days into one big input. In this example, since our **WINDOW=2**, we are going to return the same amount of rows, but instead of only having 49 columns we will multiply this quantity by the **WINDOW** size.
+
+```python
+X_train = X_train.reshape(X_train.shape[0], -1)
+X_val = X_val.reshape(X_val.shape[0], -1)
+
+print(f"X_train shape: {X_train.shape}")
+print(f"X_val shape: {X_val.shape}")
+
+#Output:
+#>X_train shape: (5045, 98)
+#>X_val shape: (24, 98)
+```
+
+Finally we only have to train the algorithm with the organized data:
+(The hyperparameters where optimized using the approach located to the left of the training model [image](#hyperparamter_optimization)
+```python
+xgb_model = xgb.XGBRegressor(gamma=1, n_estimators=200)
+xgb_model.fit(X_train,y_train)
 ```
 
 
-
+Condensed into a function:
 ```python
 def xgb_model(X_train, y_train, X_val, y_val, plotting=False):
 
@@ -401,8 +440,62 @@ def xgb_model(X_train, y_train, X_val, y_val, plotting=False):
     <img src= "https://user-images.githubusercontent.com/67901472/152218072-d0bbd0b0-7f59-449d-87c3-04dfb711763f.png" >
 </p>
 
+#### Add the predictions (if needed)
+
+Sometimes, it is also interesting, to use the training/validation predictions as a new feature, this will be used to be more accurate while passing to the test set. in this case, there was no clear evidence that this approach improves the performance, maybe more tryouts are needed in order to get nice outcomes. Nonetheless, find attached the code of how a prediction feature could be added into your model:
+```python
+#try:
+    #y_hat_train = np.expand_dims(xgb_model.predict(X_train), 1)
+    #array = np.empty((stock_prices.shape[0]-y_hat_train.shape[0], 1))
+    #array[:] = np.nan
+    #predictions = np.concatenate((array, y_hat_train))
+#except NameError:
+    #print("No Model")
+    
+#new_stock_prices = feature_engineering(stock_prices, SPY, predictions=predictions)
+
+#train, test = train_test_split(new_stock_prices, WINDOW)
+
+#train_set, validation_set = train_validation_split(train, PERCENTAGE)
+#X_train, y_train, X_val, y_val = windowing(train_set, validation_set, WINDOW, PREDICTION_SCOPE)
+
+#Reshaping the data
+#X_train = np.array(X_train)
+#y_train = np.array(y_train)
+
+#X_val = np.array(X_val)
+#y_val = np.array(y_val)
+
+#X_train = X_train.reshape(X_train.shape[0], -1)
+#X_val = X_val.reshape(X_val.shape[0], -1)
+
+#new_mae, new_xgb_model = xgb_model(X_train, y_train, X_val, y_val, plotting=True)
+
+#print(new_mae)
+```
+
 #### Testing the Model
 
+Of course, even if all the optained results seem to be nice, it is important to see the model perfroming in a real life situation. For this, lets obtain the prediction for the next day **t+1**.
+To get the predictions, the same approach than for the train and validation is required.
+
+```ptyhon
+X_test = np.array(test.iloc[:, :-1])
+y_test = np.array(test.iloc[:, -1])
+X_test = X_test.reshape(1, -1)
+
+print(f"X_test shape: {X_test.shape}")
+
+#Output:
+#>X_test shape: (1, 98)
+```
+
+Lets predict and plot the results:
+```python
+#Apply the xgboost model on the Test Data
+pred_test_xgb = xgb_model.predict(X_test)
+plotting(y_val, y_test, pred_test_xgb, mae, WINDOW, PREDICTION_SCOPE)
+```
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152218913-d46d6ed6-3623-4720-a8af-84d75054e0d2.png">
 </p>
