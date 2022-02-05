@@ -345,8 +345,10 @@ The algorithm will use the past two trading days (WINDOW=2) in order to predict 
 
 ```python
 stock_prices = feature_engineering(stock_prices, SPY)
-#Output:
-#>No model yet
+```
+```
+Output:
+-->No model yet
 ```
 Load the data with its features.
 
@@ -356,14 +358,15 @@ After that, it is time to settle the train, validation and test set. As said bef
 train, test = train_test_split(stock_prices, WINDOW)
 train_set, validation_set = train_validation_split(train, PERCENTAGE)
 
-print(train_set.shape)
-print(validation_set.shape)
-print(test.shape)
-
-#Output:
-#>(5047, 50)
-#>(26, 50)
-#>(2, 50)
+print(f"train_set shape: {train_set.shape}")
+print(f"validation_set shape: {validation_set.shape}")
+print(f"test shape: {test.shape}")
+```
+```
+Output:
+-->(5047, 50)
+-->(26, 50)
+-->(2, 50)
 ```
 We apply the windowing [udf](#udf)
 ```python
@@ -379,12 +382,13 @@ print(f"X_train shape: {X_train.shape}")
 print(f"y_train shape: {y_train.shape}")
 print(f"X_val shape: {X_val.shape}")
 print(f"y_val shape: {y_val.shape}")
-
-#Output:
-#>X_train shape: (5045, 2, 49)
-#>y_train shape: (5045,)
-#>X_val shape: (24, 2, 49)
-#>y_val shape: (24,)
+```
+```
+Output:
+-->X_train shape: (5045, 2, 49)
+-->y_train shape: (5045,)
+-->X_val shape: (24, 2, 49)
+-->y_val shape: (24,)
 ```
 
 Since the XGBoost algorthm does not allow a three dimensional input, there is a need to reshape the data into two dimensions. The idea behind the reshape is to join the rows of the windowed days into one big input. In this example, since our **WINDOW=2**, we are going to return the same amount of rows, but instead of only having 49 columns we will multiply this quantity by the **WINDOW** size.
@@ -395,10 +399,11 @@ X_val = X_val.reshape(X_val.shape[0], -1)
 
 print(f"X_train shape: {X_train.shape}")
 print(f"X_val shape: {X_val.shape}")
-
-#Output:
-#>X_train shape: (5045, 98)
-#>X_val shape: (24, 98)
+```
+```
+Output:
+-->X_train shape: (5045, 98)
+-->X_val shape: (24, 98)
 ```
 
 Finally we only have to train the algorithm with the organized data:
@@ -486,9 +491,10 @@ y_test = np.array(test.iloc[:, -1])
 X_test = X_test.reshape(1, -1)
 
 print(f"X_test shape: {X_test.shape}")
-
-#Output:
-#>X_test shape: (1, 98)
+```
+```
+Output:
+-->X_test shape: (1, 98)
 ```
 
 Lets predict and plot the results:
@@ -684,11 +690,13 @@ mae_lr = mean_absolute_error(y_val_reg, y_hat_lr)
 
 print("MSE: {}".format(np.mean((y_hat_lr-y_val_reg)**2)))
 print("MAE: {}".format(mae_lr))
-
-#Output: 
-#>MSE:14.15..
-#>MAE:2.97...
-
+```
+```
+Output: 
+-->MSE:14.15..
+-->MAE:2.97...
+```
+```python
 #Random Forest Regressor
 rf = RandomForestRegressor()
 rf.fit(X_train_reg, y_train_reg)
@@ -697,10 +705,11 @@ mae_rf= mean_absolute_error(y_val_reg, y_hat_rf)
 
 print("MSE: {}".format(np.mean((y_hat_rf-y_val_reg)**2)))
 print("MAE: {}".format(mae_rf))
-
-#Output: 
-#>MSE:94.60..
-#>MAE:8.59...
+```
+```
+Output: 
+-->MSE:94.60..
+-->MAE:8.59...
 ```
 
 Focusing just on the results obtained, you should question why on earth using a more complex algorithm as LSTM or XGBoost it is. Well the answer can be seen when plotting the predictions:
