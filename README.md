@@ -592,7 +592,7 @@ for key in list(plots.keys())[5:9]:
     </font>
 </h1> 
 
-###### LSTM
+###### Long-Short term Memory
 
 Long Short Term Memory or LSTM is a type of Recurrent Neural Network, which is developed on the basis provided by the **RNN**. The structure of the LSTM layer, can visulaized in the image below:
 
@@ -613,11 +613,155 @@ Nonetheless, there was the need to go from a simpler model to a more complex one
 
 Notice that using the LSTM implies more computation costs, slower training, etc
 
-For the sake of optimization, hyperparameter tuning was a needed to define, the input and hidden layer size, the batch_size, number of epochs and the rolling window size for the analysis.
+For the sake of optimization, the tuning of the parameters was a needed, this entailed: the input and hidden layer size, the batch_size, number of epochs and the rolling window size for the analysis.
 
 ```python
-model_lstm = lstm_model(X_train_lstm, y_train_lstm, X_val_lstm, y_val_lstm, EPOCH, BATCH_SIZE, CALLBACK, plotting=True)
+#Parameters for the LSTM
+PERCENTAGE = .98 #Split train/val and test set
+CALLBACK = .031 #Used to stop training the Network when the MAE from the validation set reached a perormance below 3.1%
+BATCH_SIZE = 20 #Number of samples that will be propagated through the network. I chose almost a trading month
+EPOCH = 50 #Settled to train the model
+WINDOW_LSTM = 30 #The window used for the input data
+PREDICTION_SCOPE = 0 #How many period to predict, being 0=1
 ```
+Once settled the optimal values, the next step is to split the dataset:
+```ptyhon
+train_lstm, test_lstm = train_test_split(stock_prices, WINDOW_LSTM)
+train_split_lstm, validation_split_lstm = train_validation_split(train_lstm, PERCENTAGE)
+
+train_split_lstm = np.array(train_split_lstm)
+validation_split_lstm = np.array(validation_split_lstm)
+```
+
+##### Rescaling to train the LSTM
+
+To improve the performance of the network, the data has to be rescaled. This is mainly due to the fact that when the data is in its original format, the loss function might adopt a shape that is far difficult to achieve its minimum, whereas, after rescaling the global minimum is easier achieveable (moreover you avoid stagnation in local minimums). For this study, the of of the MinMax Scaler was used. The algorithm rescales the data into a range from 0 to 1. The drawback is that it is sensitive to outliers.
+
+What is important to consider is that the fitting of the scaler has to be done on the training set only since it will allow to transfrom the validation and the test set compred to the train set, without including it in the rescaling. This is specially helpful in time series as several values do increase in value over time.
+
+```python
+scaler = MinMaxScaler()
+scaler.fit(train_split_lstm)
+
+train_scale_lstm = scaler.transform(train_split_lstm)
+val_scale_lstm = scaler.transform(validation_split_lstm)
+test_scale_lstm = scaler.transform(test_lstm)
+
+print(train_scale_lstm.shape)
+print(val_scale_lstm.shape)
+print(test_scale_lstm.shape)
+```
+```
+Output:
+-->(4938, 50)
+-->(101, 50)
+-->(30, 50)
+```
+
+Now lets window the data for further procedure. Since NN allow to ingest multidimensional input, there is no need to rescale the data before training the net.
+```python
+model_lstm = lstm_model(X_train_lstm, y_train_lstm, X_val_lstm, y_val_lstm, EPOCH, BATCH_SIZE, CALLBACK, plotting=True)
+
+X_train_lstm = np.array(X_train_lstm)
+y_train_lstm = np.array(y_train_lstm)
+
+X_val_lstm = np.array(X_val_lstm)
+y_val_lstm = np.array(y_val_lstm)
+
+X_test_lstm = np.array(test_scale_lstm[:, :-1])
+y_test_lstm = np.array(test_scale_lstm[:, -1])
+
+print(X_train_lstm.shape)
+print(X_val_lstm.shape)
+print(X_test_lstm.shape)
+```
+```
+Output:
+-->(4908, 30, 49)
+-->(71, 30, 49)
+-->(30, 49)
+```
+This is the point where our data is prepared to be trained by the algorithm:
+Some comments:
+* The first lines of  code are used to clear the memory of the keras API. This is specially usefull when training several time a model, adjusting the hyperparameters, so that one training is not influenced by the other.
+* There was a need to create a _callback_ class, which basically stops the iteration over the epochs when the loss function achieves a certain level of performance
+* The optimal apporach for this time series was through a neural network of on input layer, two LSTM hidden layers and a output layer or Dense layer.
+- Each hidden layer has 32 neurons, which in relation to the amount of observations is a justifiable amount.
+- For the input layer, it was neceary to define the input shape, which basically considers the window size and the number of features
+* For the sake of optimization a **Stochastic Gradient Descent** was used with a momentum of .85. Moreover a **learning rate scheduler** was coded, that aimed to return the best performing learning rate for this series. Before settling down the final value, the neural net was trained on a small amount of epochs, in order to see was shall be the best number (the last stable value of the loss curve, is a reference).
+* For the compiler, the Huber loss function was used in order to not punish the outliers in an excessive way and the metrics, through which the entire analysis is based on is the Mean Absolute Error.
+* Finally, when fitting the model: 
+- A batch size of 20 was used, as it represents approximately one trading month. The batch size is the subset of the data that is taken from the training data to run the neural network.
+- The number of epochs sum up to 50, as it equals the amount of exploratory variables.
+- The callback was settled to 3.1%, which indicates that algorithm will stop to run when the loss for the validation set undercut this predefined value. This means that the dat ahas been trained with a spread of below 3%.
+
+```python
+tf.keras.backend.clear_session()
+tf.random.set_seed(51)
+np.random.seed(51)
+
+class myCallback(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs={}):
+        if (logs.get("val_mae")<CALLBACK):
+            print("\n Accuracy reached %, so cancelling training")
+            self.model.stop_training=True
+
+callbacks = myCallback()
+
+ model = tf.keras.models.Sequential([
+    tf.keras.layers.LSTM(32, input_shape=(X_train.shape[1], X_train.shape[2]), return_sequences=True),
+    tf.keras.layers.LSTM(32),
+    tf.keras.layers.Dense(1)
+])
+
+#lr_schedule = tf.keras.callbacks.LearningRateScheduler(
+    #lambda epoch: 0.228 * 10**(epoch / 20))
+optimizer = tf.keras.optimizers.SGD(learning_rate=0.228, momentum =.85)
+model.compile(loss=tf.keras.losses.Huber(), optimizer=optimizer, metrics="mae")
+history = model.fit(X_train, y_train,batch_size=BATCH_SIZE, epochs=EPOCH,callbacks=[callbacks],  validation_data=[X_val, y_val], verbose=1)
+```
+```
+Output:
+Epoch 1/30
+328/328 [==============================] - 6s 13ms/step - loss: 5.1591e-04 - mae: 0.0161 - val_loss: 0.0046 - val_mae: 0.0819
+Epoch 2/30
+328/328 [==============================] - 4s 11ms/step - loss: 1.1767e-04 - mae: 0.0099 - val_loss: 0.0036 - val_mae: 0.0696
+Epoch 3/30
+328/328 [==============================] - 4s 11ms/step - loss: 9.9146e-05 - mae: 0.0093 - val_loss: 0.0024 - val_mae: 0.0530
+Epoch 4/30
+328/328 [==============================] - 4s 12ms/step - loss: 9.9358e-05 - mae: 0.0092 - val_loss: 0.0019 - val_mae: 0.0452
+Epoch 5/30
+328/328 [==============================] - 4s 11ms/step - loss: 7.3892e-05 - mae: 0.0077 - val_loss: 0.0012 - val_mae: 0.0355
+Epoch 6/30
+328/328 [==============================] - 4s 11ms/step - loss: 7.3492e-05 - mae: 0.0078 - val_loss: 0.0012 - val_mae: 0.0343
+Epoch 7/30
+328/328 [==============================] - 4s 12ms/step - loss: 6.5693e-05 - mae: 0.0073 - val_loss: 0.0025 - val_mae: 0.0554
+Epoch 8/30
+328/328 [==============================] - 6s 17ms/step - loss: 6.7699e-05 - mae: 0.0074 - val_loss: 0.0017 - val_mae: 0.0418
+Epoch 9/30
+328/328 [==============================] - 7s 21ms/step - loss: 6.3419e-05 - mae: 0.0074 - val_loss: 0.0012 - val_mae: 0.0361
+Epoch 10/30
+328/328 [==============================] - 5s 15ms/step - loss: 5.7910e-05 - mae: 0.0068 - val_loss: 0.0012 - val_mae: 0.0347
+Epoch 11/30
+328/328 [==============================] - 5s 15ms/step - loss: 5.7053e-05 - mae: 0.0068 - val_loss: 0.0024 - val_mae: 0.0539
+Epoch 12/30
+328/328 [==============================] - 5s 14ms/step - loss: 5.3417e-05 - mae: 0.0065 - val_loss: 0.0011 - val_mae: 0.0335
+Epoch 13/30
+328/328 [==============================] - 5s 15ms/step - loss: 5.8176e-05 - mae: 0.0069 - val_loss: 0.0014 - val_mae: 0.0377
+Epoch 14/30
+328/328 [==============================] - 5s 14ms/step - loss: 5.0530e-05 - mae: 0.0063 - val_loss: 0.0020 - val_mae: 0.0504
+Epoch 15/30
+327/328 [============================>.] - ETA: 0s - loss: 5.0619e-05 - mae: 0.0063
+ Accuracy reached %, so cancelling training
+328/328 [==============================] - 5s 15ms/step - loss: 5.0593e-05 - mae: 0.0063 - val_loss: 8.6126e-04 - val_mae: 0.0298
+```
+![image](https://user-images.githubusercontent.com/67901472/152655042-135f8f4e-788f-4678-94e2-e32c12107cc3.png)
+
+
+Notice that the loss curve is pretty stable after the initial sharp decrease at the very beginnign (first epochs), showing that there is no evidence the data is overfitted
+
+
+
 
 ```python
 def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plotting=False):
