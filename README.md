@@ -616,6 +616,10 @@ Notice that using the LSTM implies more computation costs, slower training, etc
 For the sake of optimization, hyperparameter tuning was a needed to define, the input and hidden layer size, the batch_size, number of epochs and the rolling window size for the analysis.
 
 ```python
+model_lstm = lstm_model(X_train_lstm, y_train_lstm, X_val_lstm, y_val_lstm, EPOCH, BATCH_SIZE, CALLBACK, plotting=True)
+```
+
+```python
 def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plotting=False):
     
     class myCallback(tf.keras.callbacks.Callback):
