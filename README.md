@@ -11,6 +11,7 @@
 
 
 Whom of you has not thought about being a step ahead the stock market, using information in a way that it returns accurate predictions for the next trading day. Well, since this might be true in some cases this is really far from the scope of this work.
+                                                                                                                
 The idea behind this work was to take my knowledge one step further. The hybrid combinations of Deep Learning models together with Decision trees or Linear Regressions are fascinating new ways to extract much more information of the raw inputs. Therefore, I took the things learned throughout the past years related to coding, statistics, ML models, DL models, Business Perspective, and squeezed those into an actual _deployable_ model for a real time stock price predictions.
 
 Note that this can be considered to be the final draft of what has been a very intenses research on every topic trated in this work. Since, it would be boring to explain every drawback and handicap faced during this time, send me a message and we can have a nice conversation, sharing our experiences on ML or DL deployments.
@@ -37,7 +38,7 @@ This work contains an overall analysis of the takeaways on applying a hybrid Lon
                    
 #### Introduction
                    
-Is there a way to predict the unpredictable?. Certainly not, either if stock data is discrete random, the probability of exactly predicting the correct price in the future is near 0%. Nonetheless, the spread of the future price can be shrinked down into a _confidenece interval_ that tries to reduce the risk (volatility) of the price.
+Is there a way to predict the unpredictable?. Certainly not, either if stock data is discrete random, the probability of exactly predicting the correct price in the future is near 0%. Nonetheless, the spread of the future price can be shrinked down into a _confidenece interval_ that tries to reduce the exposure to the risk (volatility) of the price.
                    
 <h1 align="center">
     <font size="30">
@@ -119,15 +120,20 @@ def features(data, SPY):
         data[f"Adj_Close{i}"] = data["Adj Close"].rolling(i).quantile(1)
     
     
-    #FEATURE ENGINEERING
+    
     data["SPY"] = SPY
+    #Decoding the time of the year
     data["Day"] = data.index.day
     data["Month"] = data.index.day
     data["Year"] = data.index.day
     data["day_year"] = data.index.day_of_year
     data["Weekday"] = data.index.weekday
+                  
+    #Upper and Lower shade
     data["Upper_Shape"] = data["High"]-np.maximum(data["Open"], data["Close"])
     data["Lower_Shape"] = np.minimum(data["Open"], data["Close"])-data["Low"]
+    
+                                                                            
     data["Close_y"] = data["Close"]
     data.drop("Close",1,  inplace=True)
     data.dropna(0, inplace=True)
@@ -144,9 +150,9 @@ Notice that even though this is a very small amount of features, there was some 
 
 #### LSTM-XGBoost
 
-Said this, let sdive deep into the core part of this project, where the combination between algorithms will (hopefully) provide us with reliable estimations of the Apple stock price for tomorrow.
+Said this, lets deep into the core part of this project, where the combination between algorithms will (hopefully) provide us with reliable estimations of the Apple stock price for tomorrow.
 
-In this sections we will make use of some user defined functions that mainly try to automitize the optimization, interpretation of the applyied models whether through a windowiing functions, graphs or comparisons.
+The way to go went through an LSTM Network ensemble with a XGBoost Regressor. 
 
 ## Content:
 - [UDF](#udf)
@@ -170,9 +176,8 @@ Imagin you want to use the information of the last 7 days to see if they are abl
     </font>
 </h4>
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/67901472/152602477-c27a5507-e9f8-44cf-80b8-0ccef3797ad8.gif" alt="animated" width=6000", height="500"/>
+  <img src="https://user-images.githubusercontent.com/67901472/152634903-84c77af7-2a5e-4f3a-8a83-4e17732a7330.gif" alt="animated" width=6000", height="500"/>
 </p>
-
 
 Where the larger rectangle represent the input data, using a eindow of two, and the smaller rectangle is the output data which we are trying to predict.
 Notice that in this study the test set will be the green big rectangle, since we want to estimate the unknown future value.
@@ -327,6 +332,42 @@ Notice that the more paramnters you insert and dpeending on how you crossvalidat
     <img src= "https://user-images.githubusercontent.com/67901472/152366615-d2ca6258-f522-49d0-8685-f9933faf8eff.png", width="500" height="350">
 </p>
 
+Lets dig into the code:
+
+```python
+PERCENTAGE = .995
+WINDOW = 2
+PREDICTION_SCOPE = 0
+```
+The algorithm will use the past two trading days (WINDOW=2) in order to predict the next day (PREDICTION_SCOPE=0), using almost the hold data for training, but the last month (except the last _WINDOW_ days), which is used for validation.
+
+```python
+stock_prices = feature_engineering(stock_prices, SPY)
+#Output:
+#>No model yet
+```
+Load the data with its features.
+
+After that, it is time to settle the train, validation and test set. As said before the division will be done according to the selected percentage. Regarding the test set, it will make use of the settled _WINDOW_ to get the **X_test** values.
+
+```python
+train, test = train_test_split(stock_prices, WINDOW)
+train_set, validation_set = train_validation_split(train, PERCENTAGE)
+
+print(train_set.shape)
+print(validation_set.shape)
+print(test.shape)
+
+#Output:
+#>(5047, 50)
+#>(26, 50)
+#>(2, 50)
+```
+We apply the windowing [udf](#udf)
+```python
+X_train, y_train, X_val, y_val = windowing(train_set, validation_set, WINDOW, PREDICTION_SCOPE)
+```
+
 
 
 ```python
@@ -368,6 +409,12 @@ def xgb_model(X_train, y_train, X_val, y_val, plotting=False):
 
 
 ## LSTM
+
+While training the series, several combinations of algorithms where used, whether RNNs, CNNs or NNs, however when it comes to time series, the **LSTM** has a significant advanatge to its predecessor the **RNNs**. For those of you who might be familiar with these Neural Networks, **RNNs** had a scaling effect on the gradients when the weights (W) where either very low or very high, leading to no change in the loss or an extreme change. In order to fix this, the LSTM was created, which basically, thanks to the different _gates_ that are used in each node, they are able to ommit this radical change making the difference more stable (reducing the likelihood of vanishing gradients). If there is an interest to dig further in the update from an **RNN** to **LSTM**, visit [GeeksforGeeks](https://www.geeksforgeeks.org/understanding-of-lstm-networks/)
+
+Nonetheless, there was the need to go from a simpler model to a more complex one, in the end the LSTM returned the most optimal performance. 
+
+Notice that using the LSTM implies more computation costs, slower training, etc
 
 ```python
 def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plotting=False):
