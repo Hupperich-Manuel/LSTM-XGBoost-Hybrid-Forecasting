@@ -632,12 +632,12 @@ for key in list(plots.keys())[5:9]:
 
 <h1 align="center">
     <font size="30">
-        <u>LSTM
+        <u>Long-Short term Memory
 </u>
     </font>
 </h1> 
 
-###### Long-Short term Memory
+###### LSTM
 
 Long Short Term Memory or LSTM is a type of Recurrent Neural Network, which is developed on the basis provided by the **RNN**. The structure of the LSTM layer, can visulaized in the image below:
 
@@ -726,6 +726,7 @@ Output:
 -->(71, 30, 49)
 -->(30, 49)
 ```
+
 This is the point where our data is prepared to be trained by the algorithm:
 Some comments:
 * The first lines of  code are used to clear the memory of the keras API. This is specially usefull when training several time a model, adjusting the hyperparameters, so that one training is not influenced by the other.
@@ -869,6 +870,7 @@ def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plott
 #### Testing the Model
 
 Lets obtain the prediction fot **t+1**:
+
 ```python
 X_test_formula = X_test_lstm.reshape(X_test_lstm.shape[0], 1, X_test_lstm.shape[1])
 print(X_test_formula.shape)
@@ -884,8 +886,9 @@ See that the shape is not what we want, since there should only be 1 row, that e
 X_test_lstm = X_test_formula.reshape(1, X_test_formula.shape[0], X_test_formula.shape[2])
 print(X_test_lstm.shape)
 ```
+```
 Output:
--->(1, 30, 49)# 30 rows (window=30) | 1 Cluster of Rows | 49 features
+-->(30, 1, 49)# 30 rows (window=30) | 1 Cluster of Rows | 49 features
 ```
 
 Now we can predict:
@@ -911,18 +914,42 @@ plotting(y_val_lstm, y_test_lstm, pred_test, mae_lstm, WINDOW_LSTM, PREDICTION_S
 #### Saving the LSTM parameters for transfer learning
 
 ```python
-#model_lstm.save('./LSTN')
-#lstm_model = tf.keras.models.load_model("LSTM") in case you want to load it
+#model_lstm.save('./LSTM')
+#lstm_model = tf.keras.models.load_model("LSTM") //in case you want to load it
 ```
 
 <h1 align="center">
     <font size="30">
-        <u>ENSEMBLING
+        <u>Ensembling
 </u>
     </font>
 </h1> 
 
 ###### Hybrid_Approach
+
+In order to get the most out of the two models, good practice is to combine those two and apply a higher weight on the model which got a lower loss function (mean absolute error). The reason is mainly because sometimes a neual network performs really good on the loss function, but when it comes to a real life situation, the  algorithm only learns the shape of the original data and copies this with one delay (+1 lag). Combining this with a decision tree regressor, might mitigate this duplicate effect.
+
+![image](https://user-images.githubusercontent.com/67901472/152656757-33f6745e-9406-4789-8d74-f1af0837b2a1.png)
+
+In our case we saw that the MAE of the LSTM was lower than the one from the XGBoost, therefore we will gave a higher weight on the predictions returned from the LSTM model.
+
+```python
+mae_xgboost = mae
+print(f"The LSTM prediction is: {pred_test})
+print(f"The XGBoost prediction is: {pred_test_xgb})
+```
+```
+Output:
+-->The LSTM prediction is: array([158.05817538])
+-->The XGBoost prediction is: array([157.07529])
+```
+
+Lets apply the above defined formula formula:
+
+```python
+scope = predictions(mae_lstm, mae_xgboost, pred_test_xgb, pred_test)
+```
+
 
 
 <h1 align="center">
