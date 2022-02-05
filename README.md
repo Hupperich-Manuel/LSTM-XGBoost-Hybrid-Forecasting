@@ -500,8 +500,105 @@ plotting(y_val, y_test, pred_test_xgb, mae, WINDOW, PREDICTION_SCOPE)
     <img src= "https://user-images.githubusercontent.com/67901472/152218913-d46d6ed6-3623-4720-a8af-84d75054e0d2.png">
 </p>
 
+#### Saving the XGBoost parameters for future usage
+```python
+#joblib.dump(xgb_model, "XGBoost.pkl")
+```
+#### Window and Percentage Optimization
+
+```python
+plots = {}
+for window in [1, 2, 3, 4, 5, 6, 7, 10, 20, 25, 30, 35]:
+    
+    for percentage in [.92, .95, .97, .98, .99, .995]:
+
+        WINDOW = window
+        PREDICTION_SCOPE = 0
+        PERCENTAGE = percentage
+
+        train = stock_prices.iloc[:int(len(stock_prices))-WINDOW]
+        test = stock_prices.iloc[-WINDOW:]
+        
+        train_set, validation_set = train_validation_split(train, PERCENTAGE)
+
+        X_train, y_train, X_val, y_val = windowing(train_set, validation_set, WINDOW, PREDICTION_SCOPE)
+
+        X_train = np.array(X_train)
+        y_train = np.array(y_train)
+
+        X_val = np.array(X_val)
+        y_val = np.array(y_val)
+
+        X_test = np.array(test.iloc[:, :-1])
+        y_test = np.array(test.iloc[:, -1])
+
+        X_train = X_train.reshape(X_train.shape[0], -1)
+        try:
+            X_val = X_val.reshape(X_val.shape[0], -1)
+            X_test = X_test.reshape(1, -1)
+        except ValueError:
+            break
+
+        xgb_model = xgb.XGBRegressor(gamma=1)
+        xgb_model.fit(X_train, y_train)
+
+        pred_val = xgb_model.predict(X_val)
+
+        mae = mean_absolute_error(y_val, pred_val)
+
+        pred_test = xgb_model.predict(X_test)
+        plotii= [y_test[-1], pred_test]
+
+        plots[str(window)+str(pred_scope)] = [y_val, y_test, pred_test, mae, WINDOW, PREDICTION_SCOPE, PERCENTAGE]
+        
+print()
+print(plots["20"])
+
+#Output:
+#>[array([179.28999329, 179.38000488, 178.19999695, 177.57000732,
+       #182.00999451, 179.69999695, 174.91999817, 172.        ,
+       #172.16999817, 172.19000244, 175.08000183, 175.52999878,
+       #172.19000244, 173.07000732, 169.80000305, 166.22999573,
+       #164.50999451, 162.41000366, 161.61999512, 159.77999878,
+       #159.69000244, 159.22000122, 170.33000183, 174.77999878]), array([174.61000061, 174.47009277]), array([171.02782], dtype=float32), 3.8374627431233725, 2, #0, 0.995]
+```
+Extract the most optimized paramters:
+```python
+window_optimization(plots)
+```
+See the multiple perfromances:
+```python
+for key in list(plots.keys())[0:3]:
+    plotting(plots[key][0], plots[key][1], plots[key][2], plots[key][3], plots[key][4], plots[key][5])
+```
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152636476-5536c4a4-cfdc-4702-9cbd-16d62d099d0b.png" width ="500" height="350">
+    <img src= "https://user-images.githubusercontent.com/67901472/152636493-572c608e-3e7e-4564-b634-383a3b59c6b9.png", width="500" height="350">
+</p>
+
 
 ## LSTM
+
+Long Short Term Memory or LSTM is a type of Recurrent Neural Network, which is developed on the basis provided by the **RNN**. The structure of the LSTM layer, can visulaized in the image below:
+
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152638045-fe9c9538-ee48-4908-bd34-bbd258cac7ef.png" width ="670" height="470">
+    <img src= "https://user-images.githubusercontent.com/67901472/152218220-1010ad55-4342-410d-b795-442db442cdb6.png", width="600" height="330">
+</p>
+
+
+
+instead fo only processing the information they recieve from the previous neuron and apply the activation function from scratch, they actually divide the neuron into three main parts from which to set up the input from the next layer of neurons: Learn, Unlearn and Retain gate.
+
+The idea behind this method is to ensure that you are using the information given from previous data and the data returned from a neural that is in the same layer, to get the input for the next nuron.
+
+This is specially usefull, when you are relying on the temporal distribution of the data, i.e. text, time series mainly.
+
+In this work we will see how the LSTM is used for predicting the next period from Apple stock. Through hyperparameter tuning there was a need to define, similar to normal RNN, the input and hidden layer size, the batch_size, number of epochs and the rolling window size for the analysis.
+
+The data ranging from 2001 till now, gained from the Yahoo Finance API, got splitted into a train, validation and test set to see how the model performed on different distributions. After that, the test set was settled to be the last width of the input data in order to predict the next period.
+
+The parameters are showed below.
 
 While training the series, several combinations of algorithms where used, whether RNNs, CNNs or NNs, however when it comes to time series, the **LSTM** has a significant advanatge to its predecessor the **RNNs**. For those of you who might be familiar with these Neural Networks, **RNNs** had a scaling effect on the gradients when the weights (W) where either very low or very high, leading to no change in the loss or an extreme change. In order to fix this, the LSTM was created, which basically, thanks to the different _gates_ that are used in each node, they are able to ommit this radical change making the difference more stable (reducing the likelihood of vanishing gradients). If there is an interest to dig further in the update from an **RNN** to **LSTM**, visit [GeeksforGeeks](https://www.geeksforgeeks.org/understanding-of-lstm-networks/)
 
@@ -547,9 +644,6 @@ def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plott
     return model
 ```
 
-<p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152218220-1010ad55-4342-410d-b795-442db442cdb6.png" width="550", height="250">
-</p>
 
 
 
