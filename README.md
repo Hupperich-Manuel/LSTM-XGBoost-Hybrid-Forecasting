@@ -10,7 +10,7 @@
 </p>
 
 
-Whom of you has not thought about being a step ahead the stock market, using information in a way that it returns accurate predictions for the next trading day. Well, since this might be true in some cases this is really far from the scope of this work.
+<ins>**Whom of you has not thought about being a step ahead the stock market**</ins>, using information in a way that it returns accurate predictions for the next trading day??. Well, since this might be true in some cases this is really far from the scope of this work.
                                                                                                                 
 The idea behind this work was to take my knowledge one step further. The hybrid combinations of Deep Learning models together with Decision trees or Linear Regressions are fascinating new ways to extract much more information of the raw inputs. Therefore, I took the things learned throughout the past years related to coding, statistics, ML models, DL models, Business Perspective, and squeezed those into an actual _deployable_ model for a real time stock price predictions.
 
@@ -317,10 +317,6 @@ The methodology followed by this algorithm is the following. XGBoost uses a Gree
 
 For more insights into how this algorithm works, check out this video from [StatQuest](https://www.youtube.com/watch?v=OtD8wVaFm6E&t=649s)
 
-The approach to train the model started by settling some assumptions:
-
-- The windowed data uses 2
-
 #### Training the Model
 
 For training the model with the best hyperparameters and with the optimal windowing (use of past input data), a time series cross validation was doen on the data. The difference to conventional cross validation method is that you must ensure that the algorithm does not randomly take samples of the data to see its performance, since past data is somehow related to future events.
@@ -568,14 +564,15 @@ window_optimization(plots)
 ```
 See the multiple perfromances:
 ```python
-for key in list(plots.keys())[0:3]:
+for key in list(plots.keys())[5:9]:
     plotting(plots[key][0], plots[key][1], plots[key][2], plots[key][3], plots[key][4], plots[key][5])
 ```
 <p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152636476-5536c4a4-cfdc-4702-9cbd-16d62d099d0b.png" width ="500" height="350">
-    <img src= "https://user-images.githubusercontent.com/67901472/152636493-572c608e-3e7e-4564-b634-383a3b59c6b9.png", width="500" height="350">
+    <img src= "https://user-images.githubusercontent.com/67901472/152638506-babdd1e9-0fb6-404e-8428-8d37298f0cec.png" width ="500" height="350">
+    <img src= "https://user-images.githubusercontent.com/67901472/152638510-48ae4a91-9e09-4640-ad43-c02ccf21164b.png", width="500" height="350">
+    <img src= "https://user-images.githubusercontent.com/67901472/152638525-619d0bf0-89a9-46ae-bfb2-4254b9917ff8.png", width="500" height="350">
+    <img src= "https://user-images.githubusercontent.com/67901472/152638547-82b303e3-5933-444c-b1f7-9da44ac7b00e.png", width="500" height="350">
 </p>
-
 
 ## LSTM
 
@@ -586,25 +583,19 @@ Long Short Term Memory or LSTM is a type of Recurrent Neural Network, which is d
     <img src= "https://user-images.githubusercontent.com/67901472/152218220-1010ad55-4342-410d-b795-442db442cdb6.png", width="600" height="330">
 </p>
 
+To get more clarifications on the syntax and the math behind this algorithm, I encourage you to do this course of [DeepLearning.AI](https://www.coursera.org/specializations/deep-learning).
 
+The algorithms main usage falls into NLPs or Time Series, and the main idea behind this is that instead fo only processing the information they recieve from the previous neuron and apply the activation function from scratch (as the RNN does), they actually divide the neuron into three main parts from which to set up the input from the next layer of neurons: Learn, Unlearn and Retain gate.
 
-instead fo only processing the information they recieve from the previous neuron and apply the activation function from scratch, they actually divide the neuron into three main parts from which to set up the input from the next layer of neurons: Learn, Unlearn and Retain gate.
+This method is to ensures that you are using the information given from previous data and the data returned from a neural that is in the same layer, to get the input for the next nuron.
 
-The idea behind this method is to ensure that you are using the information given from previous data and the data returned from a neural that is in the same layer, to get the input for the next nuron.
-
-This is specially usefull, when you are relying on the temporal distribution of the data, i.e. text, time series mainly.
-
-In this work we will see how the LSTM is used for predicting the next period from Apple stock. Through hyperparameter tuning there was a need to define, similar to normal RNN, the input and hidden layer size, the batch_size, number of epochs and the rolling window size for the analysis.
-
-The data ranging from 2001 till now, gained from the Yahoo Finance API, got splitted into a train, validation and test set to see how the model performed on different distributions. After that, the test set was settled to be the last width of the input data in order to predict the next period.
-
-The parameters are showed below.
-
-While training the series, several combinations of algorithms where used, whether RNNs, CNNs or NNs, however when it comes to time series, the **LSTM** has a significant advanatge to its predecessor the **RNNs**. For those of you who might be familiar with these Neural Networks, **RNNs** had a scaling effect on the gradients when the weights (W) where either very low or very high, leading to no change in the loss or an extreme change. In order to fix this, the LSTM was created, which basically, thanks to the different _gates_ that are used in each node, they are able to ommit this radical change making the difference more stable (reducing the likelihood of vanishing gradients). If there is an interest to dig further in the update from an **RNN** to **LSTM**, visit [GeeksforGeeks](https://www.geeksforgeeks.org/understanding-of-lstm-networks/)
+While training the Apple series, several combinations of algorithms where used, whether RNNs, CNNs or NNs, however when it comes to time series, the **LSTM** has a significant advanatge to its predecessor the **RNNs**. For those of you who might be familiar with these Neural Networks, **RNNs** had a scaling effect on the gradients when the weights (W) where either very low or very high, leading to no change in the loss or an extreme change. In order to fix this, the LSTM was created, which basically, thanks to the different _gates_ that are used in each node, they are able to ommit this radical change making the difference more stable (reducing the likelihood of vanishing gradients). If there is an interest to dig further in the update from an **RNN** to **LSTM**, visit [GeeksforGeeks](https://www.geeksforgeeks.org/understanding-of-lstm-networks/).
 
 Nonetheless, there was the need to go from a simpler model to a more complex one, in the end the LSTM returned the most optimal performance. 
 
 Notice that using the LSTM implies more computation costs, slower training, etc
+
+For the sake of optimization, hyperparameter tuning was a needed to define, the input and hidden layer size, the batch_size, number of epochs and the rolling window size for the analysis.
 
 ```python
 def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plotting=False):
