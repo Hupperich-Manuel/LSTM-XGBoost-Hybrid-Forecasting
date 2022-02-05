@@ -308,9 +308,14 @@ def plotting(y_val, y_test, pred_test, mae, WINDOW, PREDICTION_SCOPE):
     print()
 ```
 
+<h1 align="center">
+    <font size="30">
+        <u>XGBoost
+</u>
+    </font>
+</h1> 
 
-
-## XGBoost
+##### XGBoost
 XGBoost, is one of the most highly used supervised ML algorithms nowadays, as it uses a more optimized way to implement a tree based algorithm, and it is also able to efficiently manage large and complex datasets.
 
 The methodology followed by this algorithm is the following. XGBoost uses a Greedy algorithm for the building of its tree, meaning it uses a simple intuitive way to optimze the algorithm. The algorithm combines its best model, with previous ones, and so minimizes the error. So, in order to constantly select the models that are actually imporving its performance, a target is settled. and this target will depend on how much the next model has decreased the error, if there was an increase or no change in the error ythe target will be set to zero, otherwise it will set really high since it is difficult to surpas the performance of the previous model.
@@ -574,7 +579,14 @@ for key in list(plots.keys())[5:9]:
     <img src= "https://user-images.githubusercontent.com/67901472/152638547-82b303e3-5933-444c-b1f7-9da44ac7b00e.png", width="500" height="350">
 </p>
 
-## LSTM
+<h1 align="center">
+    <font size="30">
+        <u>LSTM
+</u>
+    </font>
+</h1> 
+
+###### LSTM
 
 Long Short Term Memory or LSTM is a type of Recurrent Neural Network, which is developed on the basis provided by the **RNN**. The structure of the LSTM layer, can visulaized in the image below:
 
@@ -641,10 +653,24 @@ def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plott
 ### Assumptions
 
 
+<h1 align="center">
+    <font size="30">
+        <u>ENSEMBLING
+</u>
+    </font>
+</h1> 
 
-## Hybrid_Approach
+###### Hybrid_Approach
 
-# Alternatives
+
+<h1 align="center">
+    <font size="30">
+        <u>Alternatives
+</u>
+    </font>
+</h1> 
+
+##### Alternatives
 
 Driving into the end of this work, you might ask why dont using simpler models in order to see if there is a way to benchmark the selected algorithms in this study.
 So, for this reason several _simpler_ machine learning models where applyied on the stock data, and the results might be a bit confusing.
