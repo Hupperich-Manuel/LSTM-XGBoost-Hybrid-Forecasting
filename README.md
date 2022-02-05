@@ -952,8 +952,9 @@ avg_mae = (mae_lstm + mae_xgboost)/2
 plotting(y_val, y_test, prediction_ensemble, avg_mae, WINDOW, PREDICTION_SCOPE)
 ```
 <p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152657061-257ee1a8-b9c6-4636-a246-42b3c821f833.png">
+    <img src= "https://user-images.githubusercontent.com/67901472/152657105-c66ce817-dfb3-4c42-88b5-94cf43ed1172.png">
 </p>
+
 
 
 <h1 align="center">
@@ -1001,9 +1002,18 @@ Output:
 
 Focusing just on the results obtained, you should question why on earth using a more complex algorithm as LSTM or XGBoost it is. Well the answer can be seen when plotting the predictions:
 
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152657200-2003893d-49e3-4a33-952a-9daa6dca81a5.png">
+</p>
 
+```python
+pred_test_lr = lr.predict(X_test_reg)
+plotting(y_val_reg, y_test_reg, pred_test_lr, mae_lr, WINDOW, PREDICTION_SCOPE)
+```
 
-
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152657325-87e3ed8f-0b9f-454c-9f05-a716c6e89e4a.png">
+</p>
 
 # Conclusion
 
