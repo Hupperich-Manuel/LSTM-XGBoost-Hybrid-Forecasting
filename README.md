@@ -306,6 +306,51 @@ def plotting(y_val, y_test, pred_test, mae, WINDOW, PREDICTION_SCOPE):
     print()
     print("-----------------------------------------------------------------------------")
     print()
+#-------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------
+def inverse_transformation(X, y, y_hat):
+    
+    """
+    This function serves to inverse the rescaled data. 
+    There are two ways in which this can happen:
+        - There could be the conversion for the validation data to see it on the plotting.
+        - There could be the conversion for the testing data, to see it plotted.
+    """
+    if X.shape[1]>1:
+        new_X = []
+
+        for i in range(len(X)):
+            new_X.append(X[i][0])
+            
+        new_X = np.array(new_X)
+        y = np.expand_dims(y, 1)
+        
+        new_X = pd.DataFrame(new_X)
+        y = pd.DataFrame(y)
+        y_hat = pd.DataFrame(y_hat)
+
+        real_val = np.array(pd.concat((new_X, y), 1))
+        pred_val = np.array(pd.concat((new_X, y_hat), 1))
+        
+        real_val = pd.DataFrame(scaler.inverse_transform(real_val))
+        pred_val = pd.DataFrame(scaler.inverse_transform(pred_val))
+        
+    else:       
+        X = X.reshape(X.shape[0], X.shape[1]*X.shape[2])
+        
+        new_X = pd.DataFrame(X)
+        y = pd.DataFrame(y)
+        y_hat = pd.DataFrame(y_hat)
+        y_hat = pd.concat((y, y_hat))
+        y_hat.index = range(len(y_hat))
+        
+        real_val = np.array(pd.concat((new_X, y), 1))
+        pred_val = np.array(pd.concat((new_X, y_hat), 1))
+        
+        pred_val = pd.DataFrame(scaler.inverse_transform(pred_val))
+        real_val = pd.DataFrame(scaler.inverse_transform(real_val))
+        
+    return real_val, pred_val
 ```
 
 <h1 align="center">
@@ -757,13 +802,37 @@ Epoch 15/30
 ```
 ![image](https://user-images.githubusercontent.com/67901472/152655042-135f8f4e-788f-4678-94e2-e32c12107cc3.png)
 
-
 Notice that the loss curve is pretty stable after the initial sharp decrease at the very beginnign (first epochs), showing that there is no evidence the data is overfitted
 
+Nonetheless the loss function seems extraordinarily low, one has to consider that the data was rescaled. In order to defined the real loss on the data one has to **inverse transform** the input into its original shape. This is done with the _inverse_transformation_ [udf](#udf).
+```python
+#Set up predictions for train and validation set
+y_hat_lstm = model_lstm.predict(X_val_lstm)
+y_hat_train_lstm = model_lstm.predict(X_train_lstm)
 
-
+#Validation Transormation
+mae_lstm = mean_absolute_error(y_hat_lstm, y_hat_lstm)
+real_val, pred_val = inverse_transformation(X_val_lstm, y_val_lstm, y_hat_lstm)
+mae_lstm = mean_absolute_error(real_val.iloc[:, 49], pred_val.iloc[:, 49])
+```
+Validation Set:
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152655326-f1e32a49-b2a6-46ad-a38d-11a1d375e220.png">
+</p>
 
 ```python
+real_train, pred_train = inverse_transformation(X_train_lstm, y_train_lstm, y_hat_train_lstm)
+```
+Training Set:
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152655365-74743dca-69ce-48b5-a233-a30f36ddd006.png">
+</p>
+
+```python
+tf.keras.backend.clear_session()
+tf.random.set_seed(51)
+np.random.seed(51)
+
 def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plotting=False):
     
     class myCallback(tf.keras.callbacks.Callback):
@@ -773,10 +842,6 @@ def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plott
                 self.model.stop_training=True
 
     callbacks = myCallback()
-    
-    tf.keras.backend.clear_session()
-    tf.random.set_seed(51)
-    np.random.seed(51)
     
     model = tf.keras.models.Sequential([
         tf.keras.layers.LSTM(32, input_shape=(X_train.shape[1], X_train.shape[2]), return_sequences=True),
@@ -801,11 +866,54 @@ def lstm_model(X_train, y_train, X_val, y_val, EPOCH,BATCH_SIZE,CALLBACK,  plott
     return model
 ```
 
+#### Testing the Model
 
+Lets obtain the prediction fot **t+1**:
+```python
+X_test_formula = X_test_lstm.reshape(X_test_lstm.shape[0], 1, X_test_lstm.shape[1])
+print(X_test_formula.shape)
+```
+```
+Output:
+-->(30, 1, 49)# 30 rows (window=30) | 1 Cluster of Rows | 49 features
+```
 
+See that the shape is not what we want, since there should only be 1 row, that entails a window of 30 days with 49 features. That is why there is a neeed to reshape this array.
 
-### Assumptions
+```python
+X_test_lstm = X_test_formula.reshape(1, X_test_formula.shape[0], X_test_formula.shape[2])
+print(X_test_lstm.shape)
+```
+Output:
+-->(1, 30, 49)# 30 rows (window=30) | 1 Cluster of Rows | 49 features
+```
 
+Now we can predict:
+
+```python
+y_hat_test_lstm = model_lstm.predict(X_test_lstm)
+real_test, pred_test = inverse_transformation(X_test_lstm, y_test_lstm, y_hat_test_lstm)
+
+#For plotting purposes
+y_val_lstm = np.array(real_val.iloc[-30:, 49])
+y_test_lstm = np.array(real_test.iloc[:, 49])
+pred_test = np.array(pred_test.iloc[-1:, 49])
+mae_lstm = mean_absolute_error(real_val.iloc[:, 49], pred_val.iloc[:, 49])
+
+#UDF
+plotting(y_val_lstm, y_test_lstm, pred_test, mae_lstm, WINDOW_LSTM, PREDICTION_SCOPE)
+```
+
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152655690-0c72b4e0-4a1e-4906-921f-874e7547d482.png">
+</p>
+
+#### Saving the LSTM parameters for transfer learning
+
+```python
+#model_lstm.save('./LSTN')
+#lstm_model = tf.keras.models.load_model("LSTM") in case you want to load it
+```
 
 <h1 align="center">
     <font size="30">
