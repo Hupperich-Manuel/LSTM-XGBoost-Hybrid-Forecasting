@@ -501,7 +501,7 @@ def xgb_model(X_train, y_train, X_val, y_val, plotting=False):
     <img src= "https://user-images.githubusercontent.com/67901472/152699067-ce7e94ad-f25b-46ba-a5cb-727c754a1769.png" width="600" height="400">
 </p>
 
-Since the window size os 2, the feauture performance considers twice the features, meaning, if there are 50 features, f97 == f47 or likewise f73 == f23.
+Since the window size os 2, the feauture performance considers twice the features, meaning, if there are 50 features, **f97 == f47** or **likewise f73 == f23**.
 
 #### Add the predictions (if needed)
 
