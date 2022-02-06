@@ -10,14 +10,14 @@
 </p>
 
 
-<ins>**Whom of you has not thought about being a step ahead the stock market**</ins>, using information in a way that it returns accurate predictions for the next trading day??. Well, since this might be true in some cases this is really far from the scope of this work.
+<ins>**Whom of you has not thought about being a step ahead of the stock market**</ins>, using the information in a way that it returns accurate predictions for the next trading day??. Well, since this might be true in some cases this is far from the scope of this work.
                                                                                                                 
-The idea behind this work was to take my knowledge one step further. The hybrid combinations of Deep Learning models together with Decision trees or Linear Regressions are fascinating new ways to extract much more information of the raw inputs. Therefore, I took the things learned throughout the past years related to coding, statistics, ML models, DL models, Business Perspective, and squeezed those into an actual _deployable_ model for a real time stock price predictions.
+The idea behind this work was to take my knowledge one step further. The hybrid combinations of Deep Learning models together with Decision trees or Linear Regressions are fascinating new ways to extract much more information of the raw inputs. Therefore, I took the things learned throughout the past years related to coding, statistics, ML models, DL models, Business perspectives and squeezed those into an actual _deployable_ model for real-time stock price predictions.
 
-Note that this can be considered to be the final draft of what has been a very intenses research on every topic trated in this work. Since, it would be boring to explain every drawback and handicap faced during this time, send me a message and we can have a nice conversation, sharing our experiences on ML or DL deployments.
+Note,  consider this to be the final draft of what has been very intense research on every topic treated in this work. Since it would be boring to explain every drawback and handicap faced during this time, send me a message and we can have a nice conversation, sharing our experiences on ML or DL deployments.
 
 # Abstract
-This work contains an overall analysis of the takeaways on applying a hybrid Long Short Term Memory Deep Learning Model together with an XGBoost Regressor to predict the price of the AAPL (Apple Inc.) stock for the next day (**t+1**). Throughout this work, some assumptions are made regarding the optimal number of features, some of the hyperparameter tuning (even though backtesting and tunning was done till a certain point). Notice that the expected outcome of this model should not be used as an indicator for investment decisions since the model could be refined much more, and since the scope of this work was more on learning rather than profitability.
+This work contains an overall analysis of the takeaways on applying a hybrid Long Short Term Memory Deep Learning Model together with an XGBoost Regressor to predict the price of the AAPL (Apple Inc.) stock for the next day (**t+1**). Throughout this work, some assumptions are made regarding the optimal number of features, some of the hyperparameter tuning (even though backtesting and tunning were done till a certain point). Notice that the expected outcome of this model should not be used as an indicator for investment decisions since the model could be refined much more and since the scope of this work was more on learning rather than profitability.
 
 **Keywords: XGBoost, LSTM, Windowing, Feature Engineering, Window Optimization, Hyperparameter Tuning, Mean Absolute Error, Predictions.**
 
@@ -48,14 +48,21 @@ Is there a way to predict the unpredictable?. Certainly not, either if stock dat
 </h1>
 
 #### Data 
-Apple Inc. is a publicy traded company on the tech index NASDAQ 100. Nowadays it is the highest valued company worldwide, with a capitalization of over 3 Billion $. To justify the selection of this stock, there is a need to point out what role the volatility of an asset plays when it come to trading. Volatility os the standart deviation of a stock, so, if someone is pretending to trade on a price, a higher fluctuation increases the probability of gaining more opportunities in the market, either _in the market_ or _out the market_. Since this work faces a technical analysis, the risk of deviation of a stock (volatitlity) needs to be a bit higher than normal. However, this startegy could also be applyed on assets that do not suffer from such high fluctuations.
+Apple Inc. is a publicly-traded company on the tech index NASDAQ 100. Nowadays, it is the highest valued company worldwide, with a capitalization of over 3 Billion $. To understand the selection of this asset, there is a need to point out what role the volatility of an asset plays when it comes to trading. Volatility is the standard deviation of stock prices, so if someone is pretending to trade, a higher fluctuation increases the probability of gaining more opportunities in the market, either _in the market_ or _out of the market_. Since this work faces a technical analysis, the risk of deviation of a stock (volatility) needs to be a bit higher than normal. However, this strategy could also be applied to assets that do not suffer from such high fluctuations.
 
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152142744-c6f4a510-bbf7-4f61-98b7-14a8408d0712.png" >
 </p>
-To get an idea of how stock data behaves, it is necesary to get some plottings, so that we can face how the returns, the price and the outliers perform for this specific stock.
+<h4 align="center">
+                  <u><ins>Correlation between Technology | Health | Energy Sector & Correlation between companies</ins> (2010-2015)</u>
+</h4>
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152694011-837e781f-36cd-40d7-9747-f61a535f3679.png" width="800" height="400">
+</p>
                                                                                                                      
-As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution, represented as a black line in the plot, even though it might seem to be one (a revealing indication is the higher kurtosis and fatter tails). The good thing is that the algorithms that are going to be used in this work, make no assumptions according to the [distribution of the data](https://codowd.com/bigdata/misc/Taleb_Statistical_Consequences_of_Fat_Tails.pdf). Regarding the Box Plot, we can observe that there is a significant amount of outliers that might harm our model. This is an issue which musst be considered while dealing with the features. Finally, it is also interesting how the stock performed in terms of cumulative returns, as seen in the line chart, where we can observe the evolution of the stock repsect to other tech gigants (appended you find the annualized returns).
+To better understand the behavior of stock price data, it is necessary to get some plottings, so that we can face how the returns, the price, and the outliers perform for this specific stock.
+                                                                                                                     
+As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution, represented as a black line in the plot, even though it might seem to be one (a revealing indication is the higher kurtosis and fatter tails). The good thing is that the algorithms that are going to be used in this work make no assumptions according to the [distribution of the data](https://codowd.com/bigdata/misc/Taleb_Statistical_Consequences_of_Fat_Tails.pdf). Regarding the Box Plot, we can observe a significant amount of outliers that might harm our model. Since this can later turn into an issue, it must be considered while dealing with the features. Finally, it is also interesting how the stock performed in terms of cumulative returns, as seen in the line chart, where we can observe the evolution of the stock concerning other tech giants (appended you find the annualized returns).
 
 
 <h1 align="center">
@@ -67,12 +74,12 @@ As seen in the histogram, we can observe that the distribution of the returns do
 
 #### Feature_Engineering
 
-In this section we will discuss the new features created in order to tackle a good performance in our model.
-However this might be the longest section of the whole work, not only because the optimization of a model follows a cycle where you continuously adjust the features and see which one really do add value to it (entropy), this part will only cover a small part of this process, focusing only on some of the features that where used for the training process.
+In this section, we will discuss the new features created in order to tackle a good performance in our model.
+However, this shall be the densest section of the whole work, not only because the optimization of a model follows a cycle where you continuously adjust the features and see which one really does add value to it (entropy), this part will only cover the final outcome of what has been numerous hours of trying to optimize the input for my algorithm, avoid so GIGO.
 
-Since stock prices behave also according to the time of the year, a focus of interest while generating new features was to include the day, month , quarter, etc of that specific moment as there could have been patterns in the past. An simple example is that, by the end of January, a lot of *blue chips* release their quarterly earnings, and since AAPL consistently does a good job on this, beating the expectations of the analysts, the stock tend to rise oin a short time period (for one day to another). This is quite interesting, since depending on the window optimization used for the analysis this pattern was captured or not.
+Since stock prices behave also according to the time of the year, a focus of interest while generating new features was to include the day, month, quarter, etc of that specific moment as there could have been patterns in the past. A simple example is that, by the end of January, a lot of *blue chips* release their quarterly earnings and since AAPL consistently does a good job on this, beating the expectations of the analysts, the stock tends to rise in a short time period (for one day to another). This is quite interesting since depending on the window optimization used for the analysis this pattern was captured or not.
 
-Another focus of interest are the rolling windows. These are methods that are usefull when estimating the historical mean, standart deviation, quantile, or even the maximum/minimum. All these can be found in the code below.
+Another focus of interest is the rolling window. These are useful methods when estimating the historical mean, standard deviation, quantile, or even the maximum/minimum. All these can be found in the code below.
 
 ```python
 def feature_engineering(data, SPY, predictions=np.array([None])):
@@ -166,8 +173,8 @@ The way to go went through an LSTM Network ensemble with a XGBoost Regressor.
 Main user defined functions:
 
 The first one is used for windowing the data. Although it is explained as comments inside the function, it could be fine to go over the main functionality of this function.
-Basically, this function slices the data into windows. This means that starting from a two dimensional table having time as rows and the features as columns, thanks to this method we are able to get only fractions of this data. These fractions are the considered windows. 
-Imagin you want to use the information of the last 7 days to see if they are able to predict accurately the future, so you will need to train your regressor using the input features to get the prediction for t+1. _Windowing_ does exactly this:
+Basically, this function slices the data into windows. This means that starting from a two-dimensional table having time as rows and the features as columns, thanks to this method we are able to get only fractions of this data. These fractions are considered windows. 
+Imagine you want to use the information of the last 7 days to see if they are able to predict accurately the future, so you will need to train your regressor using the input features to get the prediction for t+1. _Windowing_ does exactly this:
 
  <h4 align="center">
     <font size="6">
@@ -179,12 +186,12 @@ Imagin you want to use the information of the last 7 days to see if they are abl
   <img src="https://user-images.githubusercontent.com/67901472/152634903-84c77af7-2a5e-4f3a-8a83-4e17732a7330.gif" alt="animated" width=6000", height="500"/>
 </p>
 
-Where the larger rectangle represent the input data, using a eindow of two, and the smaller rectangle is the output data which we are trying to predict.
-Notice that in this study the test set will be the green big rectangle, since we want to estimate the unknown future value.
+Where the larger rectangle represents the input data, using a window of two, and the smaller rectangle is the output data that we are trying to predict.
+Notice that in this study the test set will be the green big rectangle since we want to estimate the unknown future value.
 
-The other functions basically fulfill the need of splitting the data into the train and test set. However this could have been dne using scikit-learn's predefined function, in order to implement the window, it was easier to code a udf. This is also the same case for the validation split.
+The other functions basically fulfill the need of splitting the data into the train and test set. However this could have been done using scikit-learn's predefined function, in order to implement the window, it was easier to code a UDF. This is also the same case for the validation split.
 
-Moreover, since the human brain feels much more comfortable when visualizing things, it was good practice to develop a function which is able to plot, the validation set, the test set and the prediction for t+? (**?** since you can predict for more than one period ahead). Aditionally, this plot includes written conclusions, the expected price of the stock and the spread intervals, taken from the validation performance.
+Moreover, since the human brain feels much more comfortable when visualizing things, it was good practice to develop a function that is able to plot, the validation set, the test set, and the prediction for t+? (**?** since you can predict for more than one period ahead). Additionally, this plot includes written conclusions, the expected price of the stock, and the spread intervals, taken from the validation performance.
 
 ```python
 def windowing(train, val, WINDOW, PREDICTION_SCOPE):
@@ -361,17 +368,17 @@ def inverse_transformation(X, y, y_hat):
 </h1> 
 
 ##### XGBoost
-XGBoost, is one of the most highly used supervised ML algorithms nowadays, as it uses a more optimized way to implement a tree based algorithm, and it is also able to efficiently manage large and complex datasets.
+XGBoost, is one of the most highly used supervised ML algorithms nowadays, as it uses a more optimized way to implement a tree-based algorithm, and it is also able to efficiently manage large and complex datasets.
 
-The methodology followed by this algorithm is the following. XGBoost uses a Greedy algorithm for the building of its tree, meaning it uses a simple intuitive way to optimze the algorithm. The algorithm combines its best model, with previous ones, and so minimizes the error. So, in order to constantly select the models that are actually imporving its performance, a target is settled. and this target will depend on how much the next model has decreased the error, if there was an increase or no change in the error ythe target will be set to zero, otherwise it will set really high since it is difficult to surpas the performance of the previous model.
+The methodology followed by this algorithm is the following. XGBoost uses a Greedy algorithm for the building of its tree, meaning it uses a simple intuitive way to optimize the algorithm. The algorithm combines its best model, with previous ones, and so minimizes the error. So, in order to constantly select the models that are actually improving its performance, a target is settled. and this target will depend on how much the next model has decreased the error, if there was an increase or no change in the error the target will be set to zero, otherwise, it will set really high since it is difficult to surpass the performance of the previous model.
 
 For more insights into how this algorithm works, check out this video from [StatQuest](https://www.youtube.com/watch?v=OtD8wVaFm6E&t=649s)
 
 #### Training the Model
 
-For training the model with the best hyperparameters and with the optimal windowing (use of past input data), a time series cross validation was doen on the data. The difference to conventional cross validation method is that you must ensure that the algorithm does not randomly take samples of the data to see its performance, since past data is somehow related to future events.
-So, there was a need to code a _user defined GridsearchCV_, thhis could be done through [_ParameterGrid_](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.ParameterGrid.html), where you insert a dictiory of parameters, and this function makes subsets including all combination of the different parameters.
-Notice that the more paramnters you insert and dpeending on how you crossvalidate (backtest) the data, it is computationally expensive, therefore when implementing this, take into account what are the benefits and the drawbacks of every approach.
+For training the model with the best hyperparameters and with the optimal windowing (use of past input data), a time series cross-validation was done on the data. The difference between the conventional cross-validation method is that you must ensure that the algorithm does not randomly take samples of the data to see its performance, since past data is somehow related to future events.
+So, there was a need to code a _user defined GridsearchCV_, this could be done through [_ParameterGrid_](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.ParameterGrid.html), where you insert a dictionary of parameters, and this function makes subsets including all combinations of the different parameters.
+Notice that the more parameters you insert and depending on how you cross-validate (backtest) the data, it is computationally expensive, therefore when implementing this, take into account what are the benefits and the drawbacks of every approach.
 
 ###### Hyperparamter_optimization
 <p align="center">
@@ -397,7 +404,7 @@ Output:
 ```
 Load the data with its features.
 
-After that, it is time to settle the train, validation and test set. As said before the division will be done according to the selected percentage. Regarding the test set, it will make use of the settled _WINDOW_ to get the **X_test** values.
+After that, it is time to settle the train, validation, and test set. As said before the division will be done according to the selected percentage. Regarding the test set, it will make use of the settled _WINDOW_ to get the **X_test** values.
 
 ```python
 train, test = train_test_split(stock_prices, WINDOW)
@@ -436,7 +443,7 @@ Output:
 -->y_val shape: (24,)
 ```
 
-Since the XGBoost algorthm does not allow a three dimensional input, there is a need to reshape the data into two dimensions. The idea behind the reshape is to join the rows of the windowed days into one big input. In this example, since our **WINDOW=2**, we are going to return the same amount of rows, but instead of only having 49 columns we will multiply this quantity by the **WINDOW** size.
+Since the XGBoost algorithm does not allow a three-dimensional input, there is a need to reshape the data into two dimensions. The idea behind the reshape is to join the rows of the windowed days into one big input. In this example, since our **WINDOW=2**, we are going to return the same amount of rows, but instead of only having 49 columns we will multiply this quantity by the **WINDOW** size.
 
 ```python
 X_train = X_train.reshape(X_train.shape[0], -1)
@@ -493,7 +500,7 @@ def xgb_model(X_train, y_train, X_val, y_val, plotting=False):
 
 #### Add the predictions (if needed)
 
-Sometimes, it is also interesting, to use the training/validation predictions as a new feature, this will be used to be more accurate while passing to the test set. in this case, there was no clear evidence that this approach improves the performance, maybe more tryouts are needed in order to get nice outcomes. Nonetheless, find attached the code of how a prediction feature could be added into your model:
+Sometimes, it is also interesting, to use the training/validation predictions as a new feature, this will be used to be more accurate while passing to the test set. in this case, there was no clear evidence that this approach improves the performance, maybe more tryouts are needed in order to get nice outcomes. Nonetheless, find attached the code of how a prediction feature could be added to your model:
 ```python
 #try:
     #y_hat_train = np.expand_dims(xgb_model.predict(X_train), 1)
@@ -527,8 +534,8 @@ Sometimes, it is also interesting, to use the training/validation predictions as
 
 #### Testing the Model
 
-Of course, even if all the optained results seem to be nice, it is important to see the model perfroming in a real life situation. For this, lets obtain the prediction for the next day **t+1**.
-To get the predictions, the same approach than for the train and validation is required.
+Of course, even if all the obtained results seem to be nice, it is important to see the model performing in a real-life situation. For this, let us obtain the prediction for the next day **t+1**.
+To get the predictions, the same approach as for the train and validation is required.
 
 ```ptyhon
 X_test = np.array(test.iloc[:, :-1])
@@ -639,7 +646,7 @@ for key in list(plots.keys())[5:9]:
 
 ###### LSTM
 
-Long Short Term Memory or LSTM is a type of Recurrent Neural Network, which is developed on the basis provided by the **RNN**. The structure of the LSTM layer, can visulaized in the image below:
+Long Short Term Memory or LSTM is a type of Neural Network, which was developed on the basis provided by the Recurrent Neural Networks, or **RNN**. The structure of the LSTM layer can be visualized in the image below:
 
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152638045-fe9c9538-ee48-4908-bd34-bbd258cac7ef.png" width ="670" height="470">
@@ -648,17 +655,18 @@ Long Short Term Memory or LSTM is a type of Recurrent Neural Network, which is d
 
 To get more clarifications on the syntax and the math behind this algorithm, I encourage you to do this course of [DeepLearning.AI](https://www.coursera.org/specializations/deep-learning).
 
-The algorithms main usage falls into NLPs or Time Series, and the main idea behind this is that instead fo only processing the information they recieve from the previous neuron and apply the activation function from scratch (as the RNN does), they actually divide the neuron into three main parts from which to set up the input from the next layer of neurons: Learn, Unlearn and Retain gate.
+The algorithms main usage falls into NLPs or Time Series, and the main idea behind this is that instead of only processing the information they receive from the previous neuron and applying the activation function from scratch (as the RNN does), they actually divide the neuron into three main parts from which to set up the input from the next layer of neurons: Learn, Unlearn and Retain gate.
 
-This method is to ensures that you are using the information given from previous data and the data returned from a neural that is in the same layer, to get the input for the next nuron.
+This method ensures that you are using the information given from previous data and the data returned from a neural that is in the same layer, to get the input for the next neuron.
 
-While training the Apple series, several combinations of algorithms where used, whether RNNs, CNNs or NNs, however when it comes to time series, the **LSTM** has a significant advanatge to its predecessor the **RNNs**. For those of you who might be familiar with these Neural Networks, **RNNs** had a scaling effect on the gradients when the weights (W) where either very low or very high, leading to no change in the loss or an extreme change. In order to fix this, the LSTM was created, which basically, thanks to the different _gates_ that are used in each node, they are able to ommit this radical change making the difference more stable (reducing the likelihood of vanishing gradients). If there is an interest to dig further in the update from an **RNN** to **LSTM**, visit [GeeksforGeeks](https://www.geeksforgeeks.org/understanding-of-lstm-networks/).
+While training the Apple series, several combinations of algorithms were used, whether RNNs, CNNs, or NNs, however when it comes to time series, the **LSTM** has a significant advantage over its predecessor the **RNNs**. For those of you who might be familiar with these Neural Networks, **RNNs** had a scaling effect on the gradients when the weights (W) were either very low or very high, leading to no change in the loss or an extreme change. In order to fix this, the LSTM was created, which basically, thanks to the different _gates_ that are used in each node, they are able to omit this radical change making the difference more stable (reducing the likelihood of vanishing gradients). If there is an interest to dig further in the update from an **RNN** to **LSTM**, visit [GeeksforGeeks](https://www.geeksforgeeks.org/understanding-of-lstm-networks/).
 
-Nonetheless, there was the need to go from a simpler model to a more complex one, in the end the LSTM returned the most optimal performance. 
+Nonetheless, there was the need to go from a simpler model to a more complex one, in the end, the LSTM returned the most optimal performance. 
 
 Notice that using the LSTM implies more computation costs, slower training, etc
 
-For the sake of optimization, the tuning of the parameters was a needed, this entailed: the input and hidden layer size, the batch_size, number of epochs and the rolling window size for the analysis.
+For the sake of optimization, parameter tunning was needed, this entailed: the input and hidden layer size, the batch_size, the number of epochs, and the rolling window size for the analysis.
+
 
 ```python
 #Parameters for the LSTM
@@ -680,9 +688,9 @@ validation_split_lstm = np.array(validation_split_lstm)
 
 ##### Rescaling to train the LSTM
 
-To improve the performance of the network, the data has to be rescaled. This is mainly due to the fact that when the data is in its original format, the loss function might adopt a shape that is far difficult to achieve its minimum, whereas, after rescaling the global minimum is easier achieveable (moreover you avoid stagnation in local minimums). For this study, the of of the MinMax Scaler was used. The algorithm rescales the data into a range from 0 to 1. The drawback is that it is sensitive to outliers.
+To improve the performance of the network, the data has to be rescaled. This is mainly due to the fact that when the data is in its original format, the loss function might adopt a shape that is far difficult to achieve its minimum, whereas, after rescaling the global minimum is easier achievable (moreover you avoid stagnation in local minimums). For this study, the MinMax Scaler was used. The algorithm rescales the data into a range from 0 to 1. The drawback is that it is sensitive to outliers.
 
-What is important to consider is that the fitting of the scaler has to be done on the training set only since it will allow to transfrom the validation and the test set compred to the train set, without including it in the rescaling. This is specially helpful in time series as several values do increase in value over time.
+What is important to consider is that the fitting of the scaler has to be done on the training set only since it will allow transforming the validation and the test set compared to the train set, without including it in the rescaling. This is especially helpful in time series as several values do increase in value over time.
 
 ```python
 scaler = MinMaxScaler()
@@ -727,19 +735,20 @@ Output:
 -->(30, 49)
 ```
 
-This is the point where our data is prepared to be trained by the algorithm:
+Now is the moment where our data is prepared to be trained by the algorithm:
 Some comments:
-* The first lines of  code are used to clear the memory of the keras API. This is specially usefull when training several time a model, adjusting the hyperparameters, so that one training is not influenced by the other.
-* There was a need to create a _callback_ class, which basically stops the iteration over the epochs when the loss function achieves a certain level of performance
-* The optimal apporach for this time series was through a neural network of on input layer, two LSTM hidden layers and a output layer or Dense layer.
-- Each hidden layer has 32 neurons, which in relation to the amount of observations is a justifiable amount.
-- For the input layer, it was neceary to define the input shape, which basically considers the window size and the number of features
-* For the sake of optimization a **Stochastic Gradient Descent** was used with a momentum of .85. Moreover a **learning rate scheduler** was coded, that aimed to return the best performing learning rate for this series. Before settling down the final value, the neural net was trained on a small amount of epochs, in order to see was shall be the best number (the last stable value of the loss curve, is a reference).
-* For the compiler, the Huber loss function was used in order to not punish the outliers in an excessive way and the metrics, through which the entire analysis is based on is the Mean Absolute Error.
+* The first lines of code are used to clear the memory of the Keras API, being especially useful when training several times a model, adjusting the hyperparameters so that one training is not influenced by the other.
+* There was a need to create a _callback_ class, which stops the iteration over the epochs when the loss function achieves a certain level of performance
+* The optimal approach for this time series was through a neural network of one input layer, two LSTM hidden layers, and an output layer or Dense layer.
+- Each hidden layer has 32 neurons, which tends to be defined as related to the number of observations in our dataset.
+- For the input layer, it was necessary to define the input shape, which basically considers the window size and the number of features
+* For the sake of optimization a **Stochastic Gradient Descent** was used with a momentum of .85. Moreover a **learning rate scheduler** was coded, that aimed to return the best performing learning rate for this series. Before settling down the final value, the neural net was trained on a small number of epochs, in order to see was shall be the best number (the last stable value of the loss curve, is a reference).
+* For the compiler, the Huber loss function was used to not punish the outliers excessively and the metrics, through which the entire analysis is based is the Mean Absolute Error.
 * Finally, when fitting the model: 
 - A batch size of 20 was used, as it represents approximately one trading month. The batch size is the subset of the data that is taken from the training data to run the neural network.
-- The number of epochs sum up to 50, as it equals the amount of exploratory variables.
-- The callback was settled to 3.1%, which indicates that algorithm will stop to run when the loss for the validation set undercut this predefined value. This means that the dat ahas been trained with a spread of below 3%.
+- The number of epochs sum up to 50, as it equals the number of exploratory variables.
+- The callback was settled to 3.1%, which indicates that the algorithm will stop running when the loss for the validation set undercut this predefined value. This means that the data has been trained with a spread of below 3%.
+
 
 ```python
 tf.keras.backend.clear_session()
@@ -805,7 +814,7 @@ Epoch 15/30
 
 Notice that the loss curve is pretty stable after the initial sharp decrease at the very beginnign (first epochs), showing that there is no evidence the data is overfitted
 
-Nonetheless the loss function seems extraordinarily low, one has to consider that the data was rescaled. In order to defined the real loss on the data one has to **inverse transform** the input into its original shape. This is done with the _inverse_transformation_ [udf](#udf).
+Nonetheless the loss function seems extraordinarily low, one has to consider that the data was rescaled. In order to defined the real loss on the data one has to **inverse transform** the input into its original shape. This is done with the _inverse_transformation_ [UDF](#udf).
 ```python
 #Set up predictions for train and validation set
 y_hat_lstm = model_lstm.predict(X_val_lstm)
@@ -927,11 +936,11 @@ plotting(y_val_lstm, y_test_lstm, pred_test, mae_lstm, WINDOW_LSTM, PREDICTION_S
 
 ###### Hybrid_Approach
 
-In order to get the most out of the two models, good practice is to combine those two and apply a higher weight on the model which got a lower loss function (mean absolute error). The reason is mainly because sometimes a neual network performs really good on the loss function, but when it comes to a real life situation, the  algorithm only learns the shape of the original data and copies this with one delay (+1 lag). Combining this with a decision tree regressor, might mitigate this duplicate effect.
+In order to get the most out of the two models, a good practice is to combine those two and apply a higher weight on the model which got a lower loss function (mean absolute error). The reason is mainly that sometimes a neural network performs really well on the loss function, but when it comes to a real-life situation, the algorithm only learns the shape of the original data and copies this with one delay (+1 lag). Combining this with a decision tree regressor might mitigate this duplicate effect.
 
 ![image](https://user-images.githubusercontent.com/67901472/152656757-33f6745e-9406-4789-8d74-f1af0837b2a1.png)
 
-In our case we saw that the MAE of the LSTM was lower than the one from the XGBoost, therefore we will gave a higher weight on the predictions returned from the LSTM model.
+In our case we saw that the MAE of the LSTM was lower than the one from the XGBoost, therefore we will give a higher weight on the predictions returned from the LSTM model.
 
 ```python
 mae_xgboost = mae
@@ -966,8 +975,8 @@ plotting(y_val, y_test, prediction_ensemble, avg_mae, WINDOW, PREDICTION_SCOPE)
 
 ##### Alternatives
 
-Driving into the end of this work, you might ask why dont using simpler models in order to see if there is a way to benchmark the selected algorithms in this study.
-So, for this reason several _simpler_ machine learning models where applyied on the stock data, and the results might be a bit confusing.
+Driving into the end of this work, you might ask why don't use simpler models in order to see if there is a way to benchmark the selected algorithms in this study.
+So, for this reason, several _simpler_ machine learning models were applied to the stock data, and the results might be a bit confusing.
 
 ```python
 #Linear Regression
@@ -1000,7 +1009,7 @@ Output:
 -->MAE:8.59...
 ```
 
-Focusing just on the results obtained, you should question why on earth using a more complex algorithm as LSTM or XGBoost it is. Well the answer can be seen when plotting the predictions:
+Focusing just on the results obtained, you should question why on earth using a more complex algorithm as LSTM or XGBoost it is. Well, the answer can be seen when plotting the predictions:
 
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152657200-2003893d-49e3-4a33-952a-9daa6dca81a5.png">
