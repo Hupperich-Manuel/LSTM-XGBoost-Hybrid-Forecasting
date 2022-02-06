@@ -497,6 +497,11 @@ def xgb_model(X_train, y_train, X_val, y_val, plotting=False):
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152218072-d0bbd0b0-7f59-449d-87c3-04dfb711763f.png" >
 </p>
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152699067-ce7e94ad-f25b-46ba-a5cb-727c754a1769.png" width="600" height="400">
+</p>
+
+Since the window size os 2, the feauture performance considers twice the features, meaning, if there are 50 features, f97 == f47 or likewise f73 == f23.
 
 #### Add the predictions (if needed)
 
@@ -612,14 +617,16 @@ for window in [1, 2, 3, 4, 5, 6, 7, 10, 20, 25, 30, 35]:
         
 print()
 print(plots["20"])
-
-#Output:
-#>[array([179.28999329, 179.38000488, 178.19999695, 177.57000732,
-       #182.00999451, 179.69999695, 174.91999817, 172.        ,
-       #172.16999817, 172.19000244, 175.08000183, 175.52999878,
-       #172.19000244, 173.07000732, 169.80000305, 166.22999573,
-       #164.50999451, 162.41000366, 161.61999512, 159.77999878,
-       #159.69000244, 159.22000122, 170.33000183, 174.77999878]), array([174.61000061, 174.47009277]), array([171.02782], dtype=float32), 3.8374627431233725, 2, #0, 0.995]
+```
+```
+Output:
+-->[array([179.28999329, 179.38000488, 178.19999695, 177.57000732,
+       182.00999451, 179.69999695, 174.91999817, 172.        ,
+       172.16999817, 172.19000244, 175.08000183, 175.52999878,
+       172.19000244, 173.07000732, 169.80000305, 166.22999573,
+       164.50999451, 162.41000366, 161.61999512, 159.77999878,
+       159.69000244, 159.22000122, 170.33000183, 174.77999878]), 
+       array([174.61000061, 174.47009277]), array([171.02782], dtype=float32), 3.8374627431233725, 2, #0, 0.995]
 ```
 Extract the most optimized paramters:
 ```python
@@ -1024,7 +1031,24 @@ plotting(y_val_reg, y_test_reg, pred_test_lr, mae_lr, WINDOW, PREDICTION_SCOPE)
     <img src= "https://user-images.githubusercontent.com/67901472/152657325-87e3ed8f-0b9f-454c-9f05-a716c6e89e4a.png">
 </p>
 
+See that the outperforming algorithm is the Linear Regression, with a very small error rate. Nonetheless, as seen in the graph the predictions seem to replicate the validation values but with a lag of one (remeber this happened also in the LSTM for small batch sizes). So, if we wanted to proceed with this one, a good approach would also be to embed the algorithm with a different one. This would be good practice as you do not further rely on a unique methodology.
+
+
 # Conclusion
+
+Reaching the end of this work, there are some key points that should be mentioned in the wrap up.
+The first thing is that this work has more about self development, and the posibility to connect with people who might work on similar projects and want to enagage with. Of course, if the algorithm would have work nearly without an error, I would not share my results publicy. Anayway, one can build up really interesting stuff on the code provided in this work.
+The second thing is that the selection of the embedding algorithms might not be the optimal choice, but as said in point one, the indention os to learn not to get the highest returns. Lerning about the most used tree-based regressor and Neural Networks are two very interesting topics that will help me in further projects, that will have more a focus on computer vision and image recognition.
+Regarding hyperparameter optimzation, someone has to face sometimes the limits of its hardware while trying to estimate the best performing parameters for its machine learning algorithm. Nonetheless, I pushed the limits to balance my resources for a good performing model.
+When it comes to feature engineering, I was able to play around with the data and see if there is more information to extract, and as I said in the study, this is in most of the cases where ML Engineers and Data Scientists probably spend the most of their time. Whether it is because of outlier processing, missing values, encoders or just model performance optimization, one can spend several weeks/months trying to identify the best possible combination.
+
+
+
+
+
+
+
+
 
 
 
