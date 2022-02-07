@@ -1036,10 +1036,14 @@ See that the outperforming algorithm is the Linear Regression, with a very small
 
 # Conclusion
 
-Reaching the end of this work, there are some key points that should be mentioned in the wrap up.
-The first thing is that this work has more about self development, and the posibility to connect with people who might work on similar projects and want to enagage with. Of course, if the algorithm would have work nearly without an error, I would not share my results publicy. Anayway, one can build up really interesting stuff on the code provided in this work.
-The second thing is that the selection of the embedding algorithms might not be the optimal choice, but as said in point one, the indention os to learn not to get the highest returns. Lerning about the most used tree-based regressor and Neural Networks are two very interesting topics that will help me in further projects, that will have more a focus on computer vision and image recognition.
+Reaching the end of this work, there are some key points that should be mentioned in the wrap up:
+
+The first thing is that this work has more about self development, and the posibility to connect with people who might work on similar projects and want to enagage with, than to obtain skyrocketing profits. Of course, if the algorithm would have work nearly without an error, I would not share my results publicy. Anayway, one can build up really interesting stuff on the code provided in this work.
+
+The second thing is that the selection of the embedding algorithms might not be the optimal choice, but as said in point one, the indention was to learn, not to get the highest returns. Lerning about the most used tree-based regressor and Neural Networks are two very interesting topics that will help me in future projects, those will have more a focus on computer vision and image recognition.
+
 Regarding hyperparameter optimzation, someone has to face sometimes the limits of its hardware while trying to estimate the best performing parameters for its machine learning algorithm. Nonetheless, I pushed the limits to balance my resources for a good performing model.
+
 When it comes to feature engineering, I was able to play around with the data and see if there is more information to extract, and as I said in the study, this is in most of the cases where ML Engineers and Data Scientists probably spend the most of their time. Whether it is because of outlier processing, missing values, encoders or just model performance optimization, one can spend several weeks/months trying to identify the best possible combination.
 
 
