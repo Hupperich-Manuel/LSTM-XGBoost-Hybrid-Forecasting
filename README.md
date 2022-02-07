@@ -396,7 +396,7 @@ PERCENTAGE = .995
 WINDOW = 2
 PREDICTION_SCOPE = 0
 ```
-The algorithm will use the past two trading days (WINDOW=2) in order to predict the next day (PREDICTION_SCOPE=0), using almost the hold data for training, but the last month (except the last _WINDOW_ days), which is used for validation.
+The algorithm will use the past two trading days (**WINDOW=2**) in order to predict the next day (**PREDICTION_SCOPE=0**), using almost the whole data for training, but the last month (except the last _WINDOW_ days), which is used for validation.
 
 ```python
 stock_prices = feature_engineering(stock_prices, SPY)
