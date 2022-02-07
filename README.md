@@ -10,9 +10,9 @@
 </p>
 
 
-<ins>**Whom of you has not thought about being a step ahead of the stock market**</ins>, using the information in a way that it returns accurate predictions for the next trading day??. Well, since this might be true in some cases this is far from the scope of this work.
+<ins>**Whom of you has not thought about being a step ahead of the stock market**</ins>, using the information to gain accurate predictions for the next trading day??. Well, I am sorry to say that I am **not** going to provide the new cheatsheet of how to gain millions in the stock market through this startegy. Nonetheless, you might gain some ideas that get you into the right path in the usage of the newest technologies in time series data.
                                                                                                                 
-The idea behind this work was to take my knowledge one step further. The hybrid combinations of Deep Learning models together with Decision trees or Linear Regressions are fascinating new ways to extract much more information of the raw inputs. Therefore, I took the things learned throughout the past years related to coding, statistics, ML models, DL models, Business perspectives and squeezed those into an actual _deployable_ model for real-time stock price predictions.
+The core idea behind doing this work was **to take my knowledge one step further**. The hybrid combinations of Deep Learning models together with Decision trees or Linear Regressions are fascinating new ways to extract much more information of the raw inputs. Therefore, I took the things learned throughout the past years related to coding, statistics, ML models, DL models, Business perspectives and squeezed those into an actual _deployable_ model for real-time stock price predictions.
 
 Note,  consider this to be the final draft of what has been very intense research on every topic treated in this work. Since it would be boring to explain every drawback and handicap faced during this time, send me a message and we can have a nice conversation, sharing our experiences on ML or DL deployments.
 
