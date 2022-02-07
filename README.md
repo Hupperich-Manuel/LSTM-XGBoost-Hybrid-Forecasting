@@ -430,7 +430,7 @@ Output:
 -->(26, 50)
 -->(2, 50)
 ```
-We apply the windowing [udf](#udf)
+We apply the windowing [UDF](#udf)
 ```python
 X_train, y_train, X_val, y_val = windowing(train_set, validation_set, WINDOW, PREDICTION_SCOPE)
 
