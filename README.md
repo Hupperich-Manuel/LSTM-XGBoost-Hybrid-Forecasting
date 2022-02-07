@@ -54,7 +54,7 @@ Apple Inc. is a publicly-traded company on the tech index NASDAQ 100. Nowadays, 
     <img src= "https://user-images.githubusercontent.com/67901472/152142744-c6f4a510-bbf7-4f61-98b7-14a8408d0712.png" >
 </p>
 <h4 align="center">
-                  <u>Correlation between Technology | Health | Energy Sector & Correlation between companies (2010-2015)</u>
+                  <u>Correlation between Technology | Health | Energy Sector & Correlation between companies (2010-2020)</u>
 </h4>
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152694011-837e781f-36cd-40d7-9747-f61a535f3679.png" width="800" height="400">
@@ -65,7 +65,7 @@ To better understand the behavior of stock price data, it is necessary to get so
 As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution, represented as a black line in the plot, even though it might seem to be one (a revealing indication is the higher kurtosis and fatter tails). The good thing is that the algorithms that are going to be used in this work make no assumptions according to the [distribution of the data](https://codowd.com/bigdata/misc/Taleb_Statistical_Consequences_of_Fat_Tails.pdf). Regarding the Box Plot, we can observe a significant amount of outliers that might harm our model. Since this can later turn into an issue, it must be considered while dealing with the features. Finally, it is also interesting how the stock performed in terms of cumulative returns, as seen in the line chart, where we can observe the evolution of the stock concerning other tech giants (appended you find the annualized returns).Finally, it is always interestng to see how correlation behaves between assets and its sectors, in case one wanted to dig deeper into the fascinating world of portfolio managent.
                                                                                                                                               
 <h4 align="center">
-                  <u>Monthly Return Functions in and out of a crash period (i.e. 2008)</u>
+                  <u>Cumulative Distribution Functions in and out of a crash period (i.e. 2008)</u>
 </h4>                                                                                                                                              
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152831718-6e2755d7-0b07-4d52-98cc-f91674f34ed1.png" width="600" height = "400">
