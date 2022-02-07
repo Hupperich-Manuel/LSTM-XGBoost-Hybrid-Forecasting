@@ -675,17 +675,15 @@ Long Short Term Memory or LSTM is a type of Neural Network, which was developed 
 
 To get more clarifications on the syntax and the math behind this algorithm, I encourage you to do this course of [DeepLearning.AI](https://www.coursera.org/specializations/deep-learning).
 
-The algorithms main usage falls into NLPs or Time Series, and the main idea behind this is that instead of only processing the information they receive from the previous neuron and applying the activation function from scratch (as the RNN does), they actually divide the neuron into three main parts from which to set up the input from the next layer of neurons: Learn, Unlearn and Retain gate.
+The algorithms main usage falls into NLPs or Time Series, and the main idea behind it relates to processing the information they receive from the previous neuron and applying the activation function from scratch (as the CNN/RNN do), they actually divide the neuron into three main parts from which to set up the input from the next layer of neurons: Learn, Unlearn and Retain gate.
 
-This method ensures that you are using the information given from previous data and the data returned from a neural that is in the same layer, to get the input for the next neuron.
+While training the Apple series, several combinations of algorithms were used, whether RNNs, CNNs, or DNNs, however when it comes to time series, the **LSTM** has a significant advantage over its predecessor, the **RNNs**. For those who might not be familiar with these Neural Networks, **RNNs** had a scaling effect on the gradients when the weights (W) were either very low or very high, leading to no change in the loss or an extreme change. In order to fix this, the LSTM was created, which, thanks to the different _gates_ that are used in each node, is able to omit this radical change making the difference more stable (reducing the likelihood of vanishing gradients). If there is an interest to dig further in the update from an **RNN** to **LSTM**, visit [GeeksforGeeks](https://www.geeksforgeeks.org/understanding-of-lstm-networks/).
 
-While training the Apple series, several combinations of algorithms were used, whether RNNs, CNNs, or NNs, however when it comes to time series, the **LSTM** has a significant advantage over its predecessor the **RNNs**. For those of you who might be familiar with these Neural Networks, **RNNs** had a scaling effect on the gradients when the weights (W) were either very low or very high, leading to no change in the loss or an extreme change. In order to fix this, the LSTM was created, which basically, thanks to the different _gates_ that are used in each node, they are able to omit this radical change making the difference more stable (reducing the likelihood of vanishing gradients). If there is an interest to dig further in the update from an **RNN** to **LSTM**, visit [GeeksforGeeks](https://www.geeksforgeeks.org/understanding-of-lstm-networks/).
+Nonetheless, the training procedure followed a structured methodology, which implied going from a simpler model (using only Dense layers) to a more complex one (Bidirectional LSTMs or CNNs), in the end, the LSTM returned the most optimal performance. 
 
-Nonetheless, there was the need to go from a simpler model to a more complex one, in the end, the LSTM returned the most optimal performance. 
+Notice that using the LSTM has also some drawbacks, as for example: higher computation costs, slower training, etc
 
-Notice that using the LSTM implies more computation costs, slower training, etc
-
-For the sake of optimization, parameter tunning was needed, this entailed: the input and hidden layer size, the batch_size, the number of epochs, and the rolling window size for the analysis.
+For the sake of optimization, parameter tunning was needed, this entailed finding the input and hidden layer size, the batch_size, the number of epochs, and the rolling window size for the analysis that **minimizes the loss function**.
 
 
 ```python
@@ -708,7 +706,11 @@ validation_split_lstm = np.array(validation_split_lstm)
 
 ##### Rescaling to train the LSTM
 
-To improve the performance of the network, the data has to be rescaled. This is mainly due to the fact that when the data is in its original format, the loss function might adopt a shape that is far difficult to achieve its minimum, whereas, after rescaling the global minimum is easier achievable (moreover you avoid stagnation in local minimums). For this study, the MinMax Scaler was used. The algorithm rescales the data into a range from 0 to 1. The drawback is that it is sensitive to outliers.
+To improve the performance of the network, the data had to be rescaled. This is mainly due to the fact that when the data is in its original format, the loss function might adopt a shape that is far difficult to achieve its minimum, whereas, after rescaling the global minimum is easier achievable (moreover you avoid stagnation in local minimums). For this study, the MinMax Scaler was used. The algorithm rescales the data into a range from 0 to 1. The drawback is that it is sensitive to outliers.
+
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152873655-7e8c7223-aace-40de-88b8-0067e9867aa9.png" >
+</p>
 
 What is important to consider is that the fitting of the scaler has to be done on the training set only since it will allow transforming the validation and the test set compared to the train set, without including it in the rescaling. This is especially helpful in time series as several values do increase in value over time.
 
