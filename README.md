@@ -54,7 +54,7 @@ Apple Inc. is a publicly-traded company on the tech index NASDAQ 100. Nowadays, 
     <img src= "https://user-images.githubusercontent.com/67901472/152142744-c6f4a510-bbf7-4f61-98b7-14a8408d0712.png" >
 </p>
 <h4 align="center">
-                  <u><ins>Correlation between Technology | Health | Energy Sector & Correlation between companies</ins> (2010-2015)</u>
+                  <u>Correlation between Technology | Health | Energy Sector & Correlation between companies (2010-2015)</u>
 </h4>
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152694011-837e781f-36cd-40d7-9747-f61a535f3679.png" width="800" height="400">
@@ -75,7 +75,7 @@ As seen in the histogram, we can observe that the distribution of the returns do
 #### Feature_Engineering
 
 In this section, we will discuss the new features created in order to tackle a good performance in our model.
-However, this shall be the densest section of the whole work, not only because the optimization of a model follows a cycle where you continuously adjust the features and see which one really does add value to it (entropy), this part will only cover the final outcome of what has been numerous hours of trying to optimize the input for my algorithm, avoid so GIGO.
+However, this shall be the densest section of the whole work, not only because the optimization of a model follows a cycle where you continuously adjust the features and see which one really does add value to it (entropy), this part will only cover the final outcome of what has been numerous hours of trying to optimize the input for my algorithm, avoiding so GIGO.
 
 Since stock prices behave also according to the time of the year, a focus of interest while generating new features was to include the day, month, quarter, etc of that specific moment as there could have been patterns in the past. A simple example is that, by the end of January, a lot of *blue chips* release their quarterly earnings and since AAPL consistently does a good job on this, beating the expectations of the analysts, the stock tends to rise in a short time period (for one day to another). This is quite interesting since depending on the window optimization used for the analysis this pattern was captured or not.
 
@@ -173,8 +173,11 @@ The way to go went through an LSTM Network ensemble with a XGBoost Regressor.
 Main user defined functions:
 
 The first one is used for windowing the data. Although it is explained as comments inside the function, it could be fine to go over the main functionality of this function.
-Basically, this function slices the data into windows. This means that starting from a two-dimensional table having time as rows and the features as columns, thanks to this method we are able to get only fractions of this data. These fractions are considered windows. 
-Imagine you want to use the information of the last 7 days to see if they are able to predict accurately the future, so you will need to train your regressor using the input features to get the prediction for t+1. _Windowing_ does exactly this:
+Basically, this function slices the data into windows. This means that starting from a two-dimensional table having time as rows and the features as columns, this function enables to divide the data into fractions (3 dimensions). These fractions are considered windows. 
+                   
+Imagine you want to use the information of the last 7 days to see if they are able to predict accurately the future, so you will need to train your regressor using the input features to get the prediction for t+1. 
+                   
+_Windowing_ does exactly this:
 
  <h4 align="center">
     <font size="6">
@@ -370,7 +373,7 @@ def inverse_transformation(X, y, y_hat):
 ##### XGBoost
 XGBoost, is one of the most highly used supervised ML algorithms nowadays, as it uses a more optimized way to implement a tree-based algorithm, and it is also able to efficiently manage large and complex datasets.
 
-The methodology followed by this algorithm is the following. XGBoost uses a Greedy algorithm for the building of its tree, meaning it uses a simple intuitive way to optimize the algorithm. The algorithm combines its best model, with previous ones, and so minimizes the error. So, in order to constantly select the models that are actually improving its performance, a target is settled. and this target will depend on how much the next model has decreased the error, if there was an increase or no change in the error the target will be set to zero, otherwise, it will set really high since it is difficult to surpass the performance of the previous model.
+The methodology followed by this algorithm is the following. XGBoost uses a Greedy algorithm for the building of its tree, meaning it uses a simple intuitive way to optimize the algorithm. The algorithm combines its best model, with previous ones, and so minimizes the error. So, in order to constantly select the models that are actually improving its performance, a target is settled. This target will depend on how much the next model has decreased the error, if there has been no change in the error the target will be set to zero, otherwise, it will set really high as surpassing its performance can be difficult for the next model.
 
 For more insights into how this algorithm works, check out this video from [StatQuest](https://www.youtube.com/watch?v=OtD8wVaFm6E&t=649s)
 
@@ -501,7 +504,9 @@ def xgb_model(X_train, y_train, X_val, y_val, plotting=False):
     <img src= "https://user-images.githubusercontent.com/67901472/152699067-ce7e94ad-f25b-46ba-a5cb-727c754a1769.png" width="600" height="400">
 </p>
 
-Since the window size os 2, the feauture performance considers twice the features, meaning, if there are 50 features, **f97 == f47** or **likewise f73 == f23**.
+<h6>
+    <font size=1>*Since the window size os 2, the feauture performance considers twice the features, meaning, if there are 50 features, <u>f97 == f47</u> or <u>likewise f73 == f23</u>.</font>
+</h6>
 
 #### Add the predictions (if needed)
 
@@ -540,6 +545,7 @@ Sometimes, it is also interesting, to use the training/validation predictions as
 #### Testing the Model
 
 Of course, even if all the obtained results seem to be nice, it is important to see the model performing in a real-life situation. For this, let us obtain the prediction for the next day **t+1**.
+
 To get the predictions, the same approach as for the train and validation is required.
 
 ```ptyhon
