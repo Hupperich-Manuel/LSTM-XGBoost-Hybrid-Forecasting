@@ -949,7 +949,7 @@ plotting(y_val_lstm, y_test_lstm, pred_test, mae_lstm, WINDOW_LSTM, PREDICTION_S
 
 <h1 align="center">
     <font size="30">
-        <u>Ensembling
+        <u>Ensemble Modelling
 </u>
     </font>
 </h1> 
