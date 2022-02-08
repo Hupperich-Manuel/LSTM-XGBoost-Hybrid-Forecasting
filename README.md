@@ -146,8 +146,8 @@ def features(data, SPY):
     data["SPY"] = SPY
     #Decoding the time of the year
     data["Day"] = data.index.day
-    data["Month"] = data.index.day
-    data["Year"] = data.index.day
+    data["Month"] = data.index.month
+    data["Year"] = data.index.year
     data["day_year"] = data.index.day_of_year
     data["Weekday"] = data.index.weekday
                   
