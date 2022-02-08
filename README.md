@@ -805,8 +805,8 @@ Output:
 
 Now is the moment where our data is prepared to be trained by the algorithm:
 Some comments:
-* The first lines of code are used to clear the memory of the Keras API, being especially useful when training several times a model, adjusting the hyperparameters so that one training is not influenced by the other.
-* There was a need to create a _callback_ class, which stops the iteration over the epochs when the loss function achieves a certain level of performance
+* The first lines of code are used to clear the memory of the Keras API, being especially useful when training a model several times as you ensure raw hyperparameter tuning, without the influence of a previous trained model.
+* There was a need to create a _callback_ class, which stops the iteration over the epochs when the loss function achieves a certain level of performance.
 * The optimal approach for this time series was through a neural network of one input layer, two LSTM hidden layers, and an output layer or Dense layer.
 - Each hidden layer has 32 neurons, which tends to be defined as related to the number of observations in our dataset.
 - For the input layer, it was necessary to define the input shape, which basically considers the window size and the number of features
