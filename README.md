@@ -433,6 +433,9 @@ So, there was a need to code a _user defined GridsearchCV_, this could be done t
 Notice that the more parameters you insert and depending on how you cross-validate (backtest) the data, it is computationally expensive, therefore when implementing this, take into account what are the benefits and the drawbacks of every approach.
 
 ###### Hyperparamter_optimization
+<h4 align="center">
+                  <u>In crescendo vs cluster cross validation</u>
+</h4>
 <p align="center">
     <img src= "https://user-images.githubusercontent.com/67901472/152366099-d36fe0ba-483c-4a63-9b4e-8a314ed32be7.png" width ="500" height="350">
     <img src= "https://user-images.githubusercontent.com/67901472/152366615-d2ca6258-f522-49d0-8685-f9933faf8eff.png", width="500" height="350">
