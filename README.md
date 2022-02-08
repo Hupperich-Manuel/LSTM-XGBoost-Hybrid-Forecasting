@@ -9,15 +9,20 @@
   <img src="https://media.giphy.com/media/CtYFOdVbvTfgZunPEA/giphy.gif" alt="animated" width=7600", height="400"/>
 </p>
 
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![Windows](https://svgshare.com/i/ZhY.svg)](https://svgshare.com/i/ZhY.svg)
+[![Github all releases](https://img.shields.io/github/downloads/Hupperich-Manuel/SEC_Company_Application/total.svg)](https://GitHub.com/Hupperich-Manuel/SEC_Company_Application/releases/)
+![counter](https://enlg7u0qi4yx26n.m.pipedream.net)                                                                                                                
 
-<ins>**Whom of you has not thought about being a step ahead of the stock market**</ins>, using the information to gain accurate predictions for the next trading day??. Well, I am sorry to say that I am **not** going to provide the new cheatsheet of how to gain millions in the stock market through this startegy. Nonetheless, you might gain some ideas that get you into the right path in the usage of the newest technologies in time series data.
+<ins>**Whom of you has not thought about being a step ahead of the stock market**</ins>, using information to gain accurate predictions for the next trading day??. Well, I am sorry to say that I am **not** going to provide the new cheatsheet of how to gain millions in the stock market through this startegy. Nonetheless, you might gain some ideas that get you into the right path in the usage of the newest technologies in time series data.
                                                                                                                 
-The core idea behind doing this work was **to take my knowledge one step further**. The hybrid combinations of Deep Learning models together with Decision trees or Linear Regressions are fascinating new ways to extract much more information of the raw inputs. Therefore, I took the things learned throughout the past years related to coding, statistics, ML models, DL models, Business perspectives and squeezed those into an actual _deployable_ model for real-time stock price predictions.
+The core idea behind this work was **to take my knowledge one step further**. The hybrid combinations of Deep Learning models together with Decision trees or Linear Regressions are fascinating new ways to extract much more information from raw inputs. Therefore, I compiled the things learned throughout the past years related to coding, statistics, ML models, DL models, Business perspectives and squeezed those into an actual _deployable_ model for real stock price predictions.
 
 Note,  consider this to be the final draft of what has been very intense research on every topic treated in this work. Since it would be boring to explain every drawback and handicap faced during this time, send me a message and we can have a nice conversation, sharing our experiences on ML or DL deployments.
 
 # Abstract
-This work contains an overall analysis of the takeaways on applying a hybrid Long Short Term Memory Deep Learning Model together with an XGBoost Regressor to predict the price of the AAPL (Apple Inc.) stock for the next day (**t+1**). Throughout this work, some assumptions are made regarding the optimal number of features, some of the hyperparameter tuning (even though backtesting and tunning were done till a certain point). Consider that the expected outcome of this model should not be used as an indicator for investment decisions since the model could be refined much more and since the scope of this work was more on learning rather than profitability. I keep the priviledge to hold the full version of this trading startegy :wink:.
+This work contains an overall analysis of the takeaways on applying a hybrid Long Short Term Memory Deep Learning Model together with an XGBoost Regressor to predict the price of the AAPL (Apple Inc.) stock for the next day (**t+1**). Throughout this work, some assumptions are made regarding the optimal number of features, and some tunings (even though backtesting and hyperparameter tuning were done, till a certain point). Consider that the expected outcome of this model should not be used as an indicator for investment decisions since the model could be refined much more. I keep the priviledge to hold the full/optimized version of this trading strategy :wink:.
 
 **Keywords: XGBoost, LSTM, Windowing, Feature Engineering, Window Optimization, Hyperparameter Tuning, Mean Absolute Error, Predictions.**
 
