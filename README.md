@@ -93,9 +93,12 @@ def feature_engineering(data, SPY, predictions=np.array([None])):
     
     """
     The function applies future engineering to the data in order to get more information out of the inserted data. 
-    The commented code below is used when we are trying to append the predictions of the model as a new input feature to train it again. In this case it performed slightli better, however depending on the parameter optimization this gain can be vanished.
-    
+    The commented code below is used when we are trying to append the predictions of the model as a new input feature to train it again. In this case it performed slightli better, however depending on the parameter optimization this gain can be vanished. 
     """
+    assert type(data) == pd.core.frame.DataFrame, "data musst be a dataframe"
+    assert type(SPY) == pd.core.series.Series, "SPY musst be a dataframe"
+    assert type(predictions) == np.ndarray, "predictions musst be an array"
+       
     #if predictions.any() ==  True:
         #data = yf.download("AAPL", start="2001-11-30")
         #SPY = yf.download("SPY", start="2001-11-30")["Close"]
@@ -222,6 +225,12 @@ def windowing(train, val, WINDOW, PREDICTION_SCOPE):
         - X_test: Explanatory variables for validation set
         - y_test:  Target variable validation set
     """  
+    
+    assert type(train) == np.ndarray, "train musst be passed as an array"
+    assert type(val) == np.ndarray, "validation musst be passed as an array"
+    assert type(WINDOW) == int, "Window musst be an integer"
+    assert type(PREDICTION_SCOPE) == int, "Prediction scope musst be an integer"
+    
     X_train = []
     y_train = []
     X_test = []
@@ -253,6 +262,10 @@ def train_test_split(data, WINDOW):
         - Train/Validation Set
         - Test Set
     """
+    
+    assert type(data) == pd.core.frame.DataFrame, "data musst be a dataframe"
+    assert type(WINDOW) == int, "Window musst be an integer"
+    
     train = stock_prices.iloc[:-WINDOW]
     test = stock_prices.iloc[-WINDOW:]
     
@@ -263,6 +276,9 @@ def train_validation_split(train, percentage):
     """
     Divides the training set into train and validation set depending on the percentage indicated
     """
+    assert type(train) == pd.core.frame.DataFrame, "train musst be a dataframe"
+    assert type(percentage) == float, "percentage musst be a float"
+    
     train_set = np.array(train.iloc[:int(len(train)*percentage)])
     validation_set = np.array(train.iloc[int(len(train)*percentage):])
     
@@ -279,6 +295,8 @@ def plotting(y_val, y_test, pred_test, mae, WINDOW, PREDICTION_SCOPE):
         - Upper Bound
         - Lower Bound
     """
+    assert type(WINDOW) == int, "Window musst be an integer"
+    assert type(PREDICTION_SCOPE) == int, "Preiction scope musst be an integer"
     
     ploting_pred = [y_test[-1], pred_test]
     ploting_test = [y_val[-1]]+list(y_test)
@@ -333,6 +351,9 @@ def inverse_transformation(X, y, y_hat):
         - There could be the conversion for the validation data to see it on the plotting.
         - There could be the conversion for the testing data, to see it plotted.
     """
+    assert type(X) == np.ndarray, "X musst be an array"
+    assert type(y) == np.ndarray, "y musst be an array"
+    
     if X.shape[1]>1:
         new_X = []
 
@@ -368,6 +389,27 @@ def inverse_transformation(X, y, y_hat):
         real_val = pd.DataFrame(scaler.inverse_transform(real_val))
         
     return real_val, pred_val
+#-------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------    
+def window_optimization(plots):
+    
+    """Returns the key that contains the most optimal window (respect to mae) for t+1"""
+    
+    assert type(plots) == dict, "plots musst be a dictionary"
+    
+    rank = []
+    m = []
+    for i in plots.keys():
+        if not rank:
+            rank.append(plots[i])
+            m.append(i)
+        elif plots[i][3]<rank[0][3]:
+            rank.clear()
+            m.clear()
+            rank.append(plots[i])
+            m.append(i)
+            
+    return rank, m
 ```
 
 <h1 align="center">
