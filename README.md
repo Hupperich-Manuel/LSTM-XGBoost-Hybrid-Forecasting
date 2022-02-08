@@ -54,23 +54,23 @@ Apple Inc. is a publicly-traded company on the tech index NASDAQ 100. Nowadays, 
     <img src= "https://user-images.githubusercontent.com/67901472/152142744-c6f4a510-bbf7-4f61-98b7-14a8408d0712.png" >
 </p>
 <h4 align="center">
-                  <u>Correlation between Technology | Health | Energy Sector & Correlation between companies (2010-2020)</u>
-</h4>
+                  <u>Cumulative Distribution Functions in and out of a crash period (i.e. 2008)</u>
+</h4> 
 <p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152694011-837e781f-36cd-40d7-9747-f61a535f3679.png" width="800" height="400">
+    <img src= "https://user-images.githubusercontent.com/67901472/152831718-6e2755d7-0b07-4d52-98cc-f91674f34ed1.png" width="600" height = "400">
 </p>
                                                                                                                      
 To better understand the behavior of stock price data, it is necessary to get some plottings, so that we can face how the returns, the price, and the outliers perform for this specific stock.
                                                                                                                      
-As seen in the histogram, we can observe that the distribution of the returns does not follow a normal distribution, represented as a black line in the plot, even though it might seem to be one (a revealing indication is the higher kurtosis and fatter tails). The good thing is that the algorithms that are going to be used in this work make no assumptions according to the [distribution of the data](https://codowd.com/bigdata/misc/Taleb_Statistical_Consequences_of_Fat_Tails.pdf). Regarding the Box Plot, we can observe a significant amount of outliers that might harm our model. Since this can later turn into an issue, it must be considered while dealing with the features. Finally, it is also interesting how the stock performed in terms of cumulative returns, as seen in the line chart, where we can observe the evolution of the stock concerning other tech giants (appended you find the annualized returns).Finally, it is always interestng to see how correlation behaves between assets and its sectors, in case one wanted to dig deeper into the fascinating world of portfolio managent.
-                                                                                                                                              
-<h4 align="center">
-                  <u>Cumulative Distribution Functions in and out of a crash period (i.e. 2008)</u>
-</h4>                                                                                                                                              
-<p align="center">
-    <img src= "https://user-images.githubusercontent.com/67901472/152831718-6e2755d7-0b07-4d52-98cc-f91674f34ed1.png" width="600" height = "400">
-</p>
+As seen in the histogram and in the cumulative distribution function, we can observe that the distribution of the returns does not follow a normal distribution, represented as a black line in the plot, even though it might seem to be one (a revealing indication is the higher kurtosis and fatter tails). The good thing is that the algorithms that are going to be used in this work make no assumptions according to the [distribution of the data](https://codowd.com/bigdata/misc/Taleb_Statistical_Consequences_of_Fat_Tails.pdf). Regarding the Box Plot, we can observe a significant amount of outliers that might harm our model. Since this can later turn into an issue, it must be considered while dealing with the features. Finally, it is also interesting how the stock performed in terms of cumulative returns, as seen in the line chart, where we can observe the evolution of the stock concerning other tech giants (appended you find the annualized returns).
 
+Finally, it is always interesting to see how correlation behaves between assets and its sectors (**Technology**: _Orange/Brown_, **Energy**: _Green_, **Health**:_Blue_), in case one wanted to dig deeper into the fascinating world of portfolio managent. See hoo for the period 2010 to 2020 tech stocks are hugely correlated among them (Apple, Microsoft, Alphabet), likewise the Energy sector follows a similar pattern to tech. Moreover, you can also observe how some companies, even if not in the same sector, but as they are _blue chips_ (biggest publicly traded companies in terms of capitalization) are slightly correlated.
+<h4 align="center">
+                  <u>Correlation between Technology | Health | Energy Sector & Correlation between companies (2010-2020)</u>
+</h4>
+<p align="center">
+    <img src= "https://user-images.githubusercontent.com/67901472/152694011-837e781f-36cd-40d7-9747-f61a535f3679.png" width="800" height="400">
+</p>                                                                                                                                                                                                                                                                                           
 
 <h1 align="center">
     <font size="30">
@@ -82,7 +82,7 @@ As seen in the histogram, we can observe that the distribution of the returns do
 #### Feature_Engineering
 
 In this section, we will discuss the new features created in order to tackle a good performance in our model.
-However, this shall be the densest section of the whole work, not only because the optimization of a model follows a cycle where you continuously adjust the features and see which one really does add value to it (entropy), this part will only cover the final outcome of what has been numerous hours of trying to optimize the input for my algorithm, avoiding so GIGO.
+However, this shall be the densest section of the whole work, not only because the optimization of a model follows a cycle where you continuously adjust the features and see which one really does add value to it (entropy), this part will only cover the final outcome of what has been numerous hours of trying to optimize the input for my algorithm, avoiding so **GIGO**.
 
 Since stock prices behave also according to the time of the year, a focus of interest while generating new features was to include the day, month, quarter, etc of that specific moment as there could have been patterns in the past. A simple example is that, by the end of January, a lot of *blue chips* release their quarterly earnings and since AAPL consistently does a good job on this, beating the expectations of the analysts, the stock tends to rise in a short time period (for one day to another). This is quite interesting since depending on the window optimization used for the analysis this pattern was captured or not.
 
@@ -719,7 +719,7 @@ To get more clarifications on the syntax and the math behind this algorithm, I e
 
 The algorithms main usage falls into NLPs or Time Series, and the main idea behind it relates to processing the information they receive from the previous neuron and applying the activation function from scratch (as the CNN/RNN do), they actually divide the neuron into three main parts from which to set up the input from the next layer of neurons: Learn, Unlearn and Retain gate.
 
-While training the Apple series, several combinations of algorithms were used, whether RNNs, CNNs, or DNNs, however when it comes to time series, the **LSTM** has a significant advantage over its predecessor, the **RNNs**. For those who might not be familiar with these Neural Networks, **RNNs** had a scaling effect on the gradients when the weights (W) were either very low or very high, leading to no change in the loss or an extreme change. In order to fix this, the LSTM was created, which, thanks to the different _gates_ that are used in each node, is able to omit this radical change making the difference more stable (reducing the likelihood of vanishing gradients). If there is an interest to dig further in the update from an **RNN** to **LSTM**, visit [GeeksforGeeks](https://www.geeksforgeeks.org/understanding-of-lstm-networks/).
+While training the Apple series, several combinations of algorithms were used, whether RNNs, CNNs, or DNNs, however when it comes to time series, the **LSTM** has a significant advantage over its predecessor, the **RNNs**. For those who might not be familiar with these Neural Networks, **RNNs** had a scaling effect on the gradient* when the weights (W) were either very low or very high, leading to no change in the loss or an extreme change. In order to fix this, the LSTM was created, which, thanks to the different _gates_ that are used in each node, is able to omit this radical change making the difference more stable (reducing the likelihood of vanishing gradients). If there is an interest to dig further in the update from an **RNN** to **LSTM**, visit [GeeksforGeeks](https://www.geeksforgeeks.org/understanding-of-lstm-networks/).
 
 Nonetheless, the training procedure followed a structured methodology, which implied going from a simpler model (using only Dense layers) to a more complex one (Bidirectional LSTMs or CNNs), in the end, the LSTM returned the most optimal performance. 
 
@@ -727,6 +727,7 @@ Notice that using the LSTM has also some drawbacks, as for example: higher compu
 
 For the sake of optimization, parameter tunning was needed, this entailed finding the input and hidden layer size, the batch_size, the number of epochs, and the rolling window size for the analysis that **minimizes the loss function**.
 
+*_gradient_ : measures the change in weights of a NN (**W·x+b**) according to the loss function.
 
 ```python
 #Parameters for the LSTM
