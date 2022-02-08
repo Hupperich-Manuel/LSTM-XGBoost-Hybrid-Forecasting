@@ -809,13 +809,13 @@ Some comments:
 * There was a need to create a _callback_ class, which stops the iteration over the epochs when the loss function achieves a certain level of performance.
 * The optimal approach for this time series was through a neural network of one input layer, two LSTM hidden layers, and an output layer or Dense layer.
 - Each hidden layer has 32 neurons, which tends to be defined as related to the number of observations in our dataset.
-- For the input layer, it was necessary to define the input shape, which basically considers the window size and the number of features
-* For the sake of optimization a **Stochastic Gradient Descent** was used with a momentum of .85. Moreover a **learning rate scheduler** was coded, that aimed to return the best performing learning rate for this series. Before settling down the final value, the neural net was trained on a small number of epochs, in order to see was shall be the best number (the last stable value of the loss curve, is a reference).
+- For the input layer, it was necessary to define the input shape, which basically considers the window size and the number of features.
+* For the sake of optimization a **Stochastic Gradient Descent** was used with a momentum of .85. Moreover a **learning rate scheduler** was coded, that aimed to return the best performing learning rate for this series. Before settling down the final value, the neural net was trained on a small number of epochs, in order to idenytify the optimal value (the last stable value of the loss curve, is a reference).
 * For the compiler, the Huber loss function was used to not punish the outliers excessively and the metrics, through which the entire analysis is based is the Mean Absolute Error.
 * Finally, when fitting the model: 
 - A batch size of 20 was used, as it represents approximately one trading month. The batch size is the subset of the data that is taken from the training data to run the neural network.
 - The number of epochs sum up to 50, as it equals the number of exploratory variables.
-- The callback was settled to 3.1%, which indicates that the algorithm will stop running when the loss for the validation set undercut this predefined value. This means that the data has been trained with a spread of below 3%.
+- The callback was settled to 3.1%, which indicates that the algorithm will stop running when the loss for the validation set undercuts this predefined value. This means that the data has been trained with a spread of below 3%.
 
 
 ```python
@@ -1004,7 +1004,7 @@ plotting(y_val_lstm, y_test_lstm, pred_test, mae_lstm, WINDOW_LSTM, PREDICTION_S
 
 ###### Hybrid_Approach
 
-In order to get the most out of the two models, a good practice is to combine those two and apply a higher weight on the model which got a lower loss function (mean absolute error). The reason is mainly that sometimes a neural network performs really well on the loss function, but when it comes to a real-life situation, the algorithm only learns the shape of the original data and copies this with one delay (+1 lag). Combining this with a decision tree regressor might mitigate this duplicate effect.
+In order to get the most out of the two models, a good practice is to combine those two and apply a higher weight on the model which got a lower loss function (mean absolute error). The reason is mainly that sometimes a neural network performs really well on the loss function, but when it comes to a real-life situation, the **algorithm only learns the shape of the original data and copies this with one delay (+1 lag)**. Combining this with a decision tree regressor might mitigate this duplicate effect.
 
 ![image](https://user-images.githubusercontent.com/67901472/152656757-33f6745e-9406-4789-8d74-f1af0837b2a1.png)
 
@@ -1094,18 +1094,30 @@ plotting(y_val_reg, y_test_reg, pred_test_lr, mae_lr, WINDOW, PREDICTION_SCOPE)
 
 See that the outperforming algorithm is the Linear Regression, with a very small error rate. Nonetheless, as seen in the graph the predictions seem to replicate the validation values but with a lag of one (remeber this happened also in the LSTM for small batch sizes). So, if we wanted to proceed with this one, a good approach would also be to embed the algorithm with a different one. This would be good practice as you do not further rely on a unique methodology.
 
+<h1 align="center">
+    <font size="30">
+        <u>Conclusion
+</u>
+    </font>
+</h1> 
 
-# Conclusion
+##### Conclusion
 
 Reaching the end of this work, there are some key points that should be mentioned in the wrap up:
 
-The first thing is that this work has more about self development, and the posibility to connect with people who might work on similar projects and want to enagage with, than to obtain skyrocketing profits. Of course, if the algorithm would have work nearly without an error, I would not share my results publicy. Anayway, one can build up really interesting stuff on the code provided in this work.
+The first thing is that this work has more about **self development**, and a way to **connect with people** who might work on similar projects and want to enagage with, than to obtain skyrocketing profits. As said at the beginning of this work, the extended version of this code remains hidden in the VSCode of my local machine. Nonetheless, **one can build up really interesting stuff on the foundations provided in this work**.
 
-The second thing is that the selection of the embedding algorithms might not be the optimal choice, but as said in point one, the indention was to learn, not to get the highest returns. Lerning about the most used tree-based regressor and Neural Networks are two very interesting topics that will help me in future projects, those will have more a focus on computer vision and image recognition.
+The second thing is that the selection of the embedding algorithms might not be the optimal choice, but as said in point one, the indention was to learn, not to get the highest returns. Lerning about the most used **tree-based regressor** and **Neural Networks** are two very interesting topics that will help me in future projects, those will have more a focus on computer vision and image recognition.
 
-Regarding hyperparameter optimzation, someone has to face sometimes the limits of its hardware while trying to estimate the best performing parameters for its machine learning algorithm. Nonetheless, I pushed the limits to balance my resources for a good performing model.
+Regarding hyperparameter optimzation, someone has to face sometimes the limits of its hardware while trying to estimate the best performing parameters for its machine learning algorithm. Nonetheless, **I pushed the limits to balance my resources for a good performing model**.
 
-When it comes to feature engineering, I was able to play around with the data and see if there is more information to extract, and as I said in the study, this is in most of the cases where ML Engineers and Data Scientists probably spend the most of their time. Whether it is because of outlier processing, missing values, encoders or just model performance optimization, one can spend several weeks/months trying to identify the best possible combination.
+When it comes to **feature engineering**, I was able to play around with the data and see if there is more information to extract, and as I said in the study, this is in most of the cases where ML Engineers and Data Scientists probably spend the most of their time. Whether it is because of **outlier processing**, **missing values**, **encoders** or just model performance optimization, one can spend several weeks/months trying to identify the best possible combination.
+
+More than ever, when deploying a ML model in real life, the results might differ from the ones obtained while training and testing it. Therefore, it is recomendable to **always upgrade the model** in case you want to make use of it on a real basis.
+
+Said this, I wanted to **thank those that took their time to help me** with this project, guiding me thorugh it or simply pushing me to go the extra mile.
+
+I hope you enjoyed this case study, and whenever you have some struggles and/or questions, do not hesitate to contact me.
 
 
 
