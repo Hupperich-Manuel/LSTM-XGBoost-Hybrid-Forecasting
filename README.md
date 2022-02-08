@@ -723,7 +723,7 @@ Long Short Term Memory or LSTM is a type of Neural Network, which was developed 
     <img src= "https://user-images.githubusercontent.com/67901472/152218220-1010ad55-4342-410d-b795-442db442cdb6.png", width="600" height="330">
 </p>
 
-To get more clarifications on the syntax and the math behind this algorithm, I encourage you to do this course of [DeepLearning.AI](https://www.coursera.org/specializations/deep-learning).
+To get more clarifications on the syntax and the math behind this algorithm, I encourage you to visit my other [repository](https://github.com/Hupperich-Manuel/Deep_Networks) where it gets into the fundamentals of a Neural Network, or do this course of [DeepLearning.AI](https://www.coursera.org/specializations/deep-learning).
 
 The algorithms main usage falls into NLPs or Time Series, and the main idea behind it relates to processing the information they receive from the previous neuron and applying the activation function from scratch (as the CNN/RNN do), they actually divide the neuron into three main parts from which to set up the input from the next layer of neurons: Learn, Unlearn and Retain gate.
 
