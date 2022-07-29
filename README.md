@@ -201,7 +201,7 @@ _Windowing_ does exactly this:
     </font>
 </h4>
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/67901472/152634903-84c77af7-2a5e-4f3a-8a83-4e17732a7330.gif" alt="animated" width=6000", height="500"/>
+  <img src="https://user-images.githubusercontent.com/67901472/152634903-84c77af7-2a5e-4f3a-8a83-4e17732a7330.gif" alt="animated" width=700", height="500"/>
 </p>
 
 Where the larger rectangle represents the input data, using a window of two, and the smaller rectangle is the output data that we are trying to predict.
