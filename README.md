@@ -1,6 +1,5 @@
 # LSTM-XGBoost Hybrid Stock Forecasting
 
-![Readme Card](https://github-readme-stats.vercel.app/api/pin?username=Hupperich-Manuel&repo=LSTM-XGBoost)
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
