@@ -1,9 +1,4 @@
-<h1 align="center">
-    <font size="30">
-        <u>LSTM-XGBoost Hybrid Stock Forecasting
-</u>
-    </font>
-</h1>
+# LSTM-XGBoost Hybrid Stock Forecasting
 
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
