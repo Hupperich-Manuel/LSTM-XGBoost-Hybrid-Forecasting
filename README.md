@@ -3,7 +3,6 @@
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-[![Windows](https://svgshare.com/i/ZhY.svg)](https://svgshare.com/i/ZhY.svg)
 [![Github all releases](https://img.shields.io/github/downloads/Hupperich-Manuel/SEC_Company_Application/total.svg)](https://GitHub.com/Hupperich-Manuel/SEC_Company_Application/releases/)
 ![counter](https://enlg7u0qi4yx26n.m.pipedream.net)                                                                                                                
 
